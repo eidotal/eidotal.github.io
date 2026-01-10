@@ -23,6 +23,7 @@ jobs:
       - name: Build HTML
         run: |
           sudo apt-get install -y asciidoctor
+          gem install pygments.rb
           # This builds index.adoc and everything in Pages/
           asciidoctor index.adoc
           find Pages/ -name "*.adoc" -exec asciidoctor {} +
