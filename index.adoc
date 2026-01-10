@@ -1,4 +1,5 @@
 = Eido Tal - Wiki
+include::../attribute-include[]
 
 ====
 .CV

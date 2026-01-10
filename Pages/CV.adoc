@@ -1,4 +1,5 @@
 = CV – Eido Tal 
+include::../attribute-include[]
 
 // [verse]
 // ____
