@@ -3,11 +3,122 @@ include::../utils/attribute-include[]
 
 == DV Env Structure
 
+The testbench is architected as a modular, layered UVM environment, separating stimulus generation, protocol driving, monitoring, checking, configuration, and results verification into clearly defined and reusable components. This structure enforces separation of concerns, improves scalability, and enables efficient debug and reuse across projects.
+
 .Block Diagram
 image::./DV_ENV.svg[static,750,role="related thumb center"]
 
+=== Top-Level Environment
+
+The top-level `dv_env` is responsible for:
+
+* Instantiating and connecting all agents (input, output, interrupt, and sideband if applicable)
+* Building and configuring the RAL (Register Abstraction Layer) environment
+* Instantiating the checker and scoreboard infrastructure
+* Providing a virtual sequencer to coordinate multi-interface stimulus
+* Owning global configuration objects and analysis connections
+
+All configuration is driven via `uvm_config_db` using strongly-typed configuration objects to avoid string-based errors and to ensure compile-time visibility of configuration intent.
+
 === Generation
 
-=== Configuration
+The generation layer manages the lifecycle of stimulus through a sequence-based architecture coordinated by a Virtual Sequencer. This layer is intentionally protocol-agnostic and expresses intent at a transaction or scenario level rather than at pin-level timing.
+
+* **Sequence Library:**
+  ** Includes directed, constrained-random, and stress sequences mapped directly to the verification plan.
+  ** Sequences are composable and layered (base → scenario → stress) to maximize reuse.
+  ** All sequences are self-checking only in terms of local assumptions (e.g., legal stimulus), never DUT correctness.
+
+* **Key Sequences:**
+  ** `reset_seq`: Drives reset pins via the `dut_if` and waits for architectural reset completion, including internal status polling through RAL when applicable.
+  ** `config_seq`: Programs the DUT exclusively through the **RAL Env** to set operational modes, feature enables, thresholds, and masks. No direct register pokes are allowed outside RAL.
+  ** `traffic_seq`: Generates functional traffic targeting datapath and control-path scenarios, supporting constrained-random distributions and corner-case injection.
+  ** `error_injection_seq`: Explicitly violates protocol or configuration assumptions (where architecturally allowed) to validate robustness and error handling.
+
+* **Virtual Sequencer:**
+  ** Coordinates sequences across multiple agents (e.g., input, output, interrupt) to model realistic system-level scenarios.
+  ** Owns handles to all lower-level sequencers and enforces ordering and synchronization between them.
+
+* **Runtime Control:**
+  ** `logger_control`: A control block used to dynamically adjust `uvm_verbosity`, enable/disable specific checkers, and gate coverage collection during runtime without recompilation.
+
+=== Agents
+
+Each interface is encapsulated in a dedicated UVM agent with a standard structure:
+
+* **Driver:** Converts sequence items into cycle-accurate pin-level activity.
+* **Monitor:** Passively samples the interface and publishes transactions via analysis ports.
+* **Sequencer:** Arbitrates sequence items and enforces protocol-level constraints.
+
+Agents support `ACTIVE` and `PASSIVE` modes to allow reuse in block-level, subsystem-level, and SoC-level environments.
+
+=== Register Abstraction Layer (RAL)
+
+The RAL environment is the single source of truth for all memory-mapped registers:
+
+* Auto-generated from the architectural register specification
+* Supports frontdoor (bus) and backdoor access
+* Used for:
+  ** Configuration and mode programming
+  ** Status polling and synchronization
+  ** Functional checking of register behavior (reset values, RW/RO/WO semantics)
+
+All tests and sequences must use RAL APIs. Direct signal access to registers is prohibited outside of monitors and assertions.
 
 === Checker
+
+The Checker block serves as the verification "brain," comparing RTL behavior against architectural intent and golden models.
+
+* **Reference Modeling:**
+  ** `C-model`: An external golden architectural model integrated via DPI-C. It consumes the same transactions observed by the monitors and produces bit-accurate expected results and events.
+
+* **Functional Checking Blocks:**
+  ** `checker_state`: Monitors protocol-specific and architectural state machines to ensure the DUT follows valid transitions and sequencing rules.
+  ** `rate_mngr`: Validates performance metrics, including throughput, latency, and backpressure behavior against documented requirements.
+  ** `interrupt_checker`: Explicitly monitors interrupt lines on the `dut_if` to verify proper assertion, de-assertion, masking, and prioritization behavior.
+
+* **Data Validation:**
+  ** `scoreboard (scbd)`: Performs end-to-end comparison between expected results from the **C-model** and observed data from the **Output Agent**. Supports in-order and out-of-order matching as required by the architecture.
+  ** `coverage`: Collects functional coverage tied directly to the verification plan, including cross-coverage between configuration, stimulus, and observed behavior.
+
+=== Assertions
+
+SystemVerilog Assertions (SVA) are used to complement scoreboard-based checking:
+
+* Interface-level protocol assertions
+* Register semantic assertions (e.g., write-1-to-clear behavior)
+* Micro-architectural safety properties where appropriate
+
+Assertions are categorized as:
+
+* **Fatal:** Indicate architectural violations and immediately fail the test
+* **Error:** Indicate functional mismatches that are logged and summarized
+* **Warning:** Indicate suspicious but potentially legal behavior
+
+=== Test Structure
+
+Tests are intentionally thin and declarative:
+
+* Select and configure sequences
+* Configure environment parameters
+* Define coverage and checker enablement
+
+All functional intent resides in sequences and checkers, not in tests.
+
+=== Regression and Metrics
+
+Regression quality is measured using:
+
+* Functional coverage closure against the verification plan
+* Assertion and scoreboard failure rates
+* Performance metric coverage (latency/throughput bins)
+* Code coverage (used as a secondary confidence metric, not a goal)
+
+Regression results are automatically summarized and archived to enable trend analysis and signoff readiness.
+
+=== Guiding Principles
+
+* RAL is mandatory for all register access
+* No checking in drivers or sequences
+* All checkers must be architecture-driven, not implementation-driven
+* Debuggability and reuse take priority over micro-optimizations

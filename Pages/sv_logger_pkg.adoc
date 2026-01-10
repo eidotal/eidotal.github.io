@@ -1,0 +1,425 @@
+= sv_logger_pkg
+Advanced UVM Reporting and Logging Framework
+include::../utils/attribute-include[]
+
+This document provides comprehensive documentation for the `sv_logger_pkg` SystemVerilog package, an advanced framework designed to enhance UVM (Universal Verification Methodology) reporting and logging capabilities. It offers centralized control, flexible message routing, custom formatting, and support for multi-ID reporting, significantly improving testbench debuggability and log analysis.
+
+NOTE: This documentation describes the functionality and usage of the `sv_logger_pkg`. For the complete SystemVerilog source code, please refer to the respective `.sv` files in the package directory.
+
+== Package Overview
+`sv_logger_pkg` is a collection of System-Verilog extending UVM reporting infrastructure.
+Enabling:
+
+* Selective Verbosity Control
+* Selective Log Seperation
+* Multiple Message-IDs
+* Multiple report_server - formatters
+
+The package includes:
+[unordered.stack]
+`sv_logger_defines.sv`::
+Macros for simplified UVM reporting calls within objects.
+`sv_logger_control.sv`::
+A UVM component for centralized configuration of report actions, verbosity, and file redirection.
+`sv_virtual_report_server.sv`::
+A custom UVM report server that acts as a message router, supporting multiple message IDs per report and dynamic server selection.
+`sv_report_server.sv`::
+A standard custom report server for human-readable log formatting.
+`sv_report_server_json.sv`::
+A custom report server for JSON-formatted log output, ideal for automated parsing.
+
+== Core Concepts
+
+The `sv_logger_pkg` is built upon several core concepts that enable its advanced functionality:
+
+=== Centralized Reporting Control
+Instead of configuring UVM report settings (actions, verbosity, file redirection) on individual components, `sv_logger_control` provides a single, central point for all such configurations.
+This simplifies testbench setup, improves consistency, and makes it easier to modify logging behavior across the entire environment.
+
+=== Hierarchical Application of Settings
+The `sv_logger_control` class leverages UVM's hierarchical reporting methods (e.g., `set_report_severity_action_hier`). This means that settings applied through `sv_logger_control` to a parent component (like `uvm_top` or a top-level environment) will automatically propagate and apply to all child components within that hierarchy, ensuring consistent behavior without manual configuration for each sub-component.
+
+=== Custom Report Servers and Formatting
+The UVM allows users to replace the default `uvm_report_server` with a custom implementation. `sv_logger_pkg` provides `sv_virtual_report_server`, `sv_report_server`, and `sv_report_server_json` to demonstrate this capability. Custom report servers can:
+
+[unordered.stack]
+**Override `compose_report_message`**::
+To define specific formats for log messages (e.g., adding custom metadata, changing field order, or outputting structured data like JSON).
+**Override `process_report_message`**::
+To implement custom logic for how messages are handled, including advanced filtering, routing to different files, or triggering external actions.
+
+=== Multi-ID Reporting
+A unique feature of this package is the ability to associate multiple message IDs with a single UVM report macro call (e.g., `` `uvm_info("ID1;ID2", "My message", UVM_LOW) ``). The `sv_virtual_report_server` parses these composite IDs and processes the message independently for each sub-ID. This allows for:
+
+[unordered.stack]
+**Granular Control**::
+Each sub-ID can have its own verbosity, action, and file redirection settings, enabling highly specific control over logging behavior from a single message source.
+**Flexible Categorization**::
+A single event can be categorized under multiple message IDs, facilitating different types of analysis or filtering.
+
+=== File Management
+The package provides robust mechanisms for directing log messages to specific files:
+
+[unordered.stack]
+**Default Log File**::
+A primary log file for all messages not explicitly redirected.
+**Message ID-Specific Files**::
+Messages with particular IDs can be routed to their own dedicated log files.
+**Dynamic File Addition**::
+Log files can be opened and associated with message IDs even after the `build_phase` (e.g., during `run_phase`), offering "on-the-fly" logging control.
+**Directory Management**::
+Support for creating a separate output directory for all generated log files.
+
+== Class Reference
+
+This section details each class and its key methods within the `sv_logger_pkg`. For full implementation details, refer to the respective SystemVerilog source files.
+
+=== sv_logger_pkg.sv
+
+This is the main package file. It serves as an organizational container, importing the `uvm_pkg` and including all other SystemVerilog files that constitute the `sv_logger_pkg`. This structure ensures that all classes and macros within the package are compiled together and are accessible under the `sv_logger_pkg` namespace.
+
+=== sv_logger_defines.sv
+
+This file defines a set of SystemVerilog macros that simplify the integration of the UVM reporting system into any `uvm_object`. They ensure that a `uvm_report_object` handle (`p_report_object`) is available before any UVM report function is called. The primary macro for user integration is `SV_OBJECT_REPORT`.
+
+[NOTE]
+====
+Should be used only at `uvm_object`.
+====
+
+=== sv_logger_utils.sv
+
+This file containt utilitiy functions that provides easy way to get specific printing formats. +
+The goal is to enable an easy way to have specific uniform Formats
+
+Key Functions:
+
+[unordered.stack]
+`function string sprint_force_signal(string env_name, string signal_path, string value)`::
+Uniform format to be used when forcing a signal 
+`function string sprint_release_signal(string env_name, string signal_path)`::
+Uniform format to be used when releasing a forced signal
+
+=== sv_logger_control.sv
+
+This `uvm_component` is the central hub for configuring UVM report settings. It collects desired actions, verbosity levels, and file redirection preferences, and applies them hierarchically to a target `uvm_component` (typically `uvm_top` or a top-level environment).
+
+Wrapping UVM to proved simpler access to UVM advanced Logging capabilities. +
+primary usage:
+
+. Selective Verbosity Control
+. Selective Log Seperation
+
+Key methods:
+
+[unordered.stack]
+`function new(string name, uvm_component parent)`::
+Constructor.
+`virtual function void set_logger(string in_dut_name, uvm_component in_component, uvm_action in_print_option = UVM_LOG)`::
+Initializes the logger with DUT name and the target component for hierarchical settings.
+`virtual function void add_severity_action(uvm_severity severity, uvm_action action)`::
+Adds or overrides the action for a specific UVM severity.
+`virtual function void add_message_id_severity_action(string message_id, uvm_severity severity, uvm_action action)`::
+Adds or overrides the action for a specific message ID and severity combination.
+`virtual function void set_seperate_dir(string in_dir_name)`::
+Configures a separate directory for all log files and creates it.
+`virtual function void set_log_file_message_id(string log_file_name, string message_id)`::
+Associates a message ID with a specific log file.
+`virtual function void set_verbosity_message_id(string message_id, uvm_verbosity verbose)`::
+Sets the verbosity level for a specific message ID.
+`virtual function void set_file_header_footer(string filename, string header, string footer)`::
+Provide `header` and `footer` string to be print (`$fdisplay`) at start & end of the new log-file.
+`virtual function void set_default_file(string default_file_name)`::
+Configures the default log file for the entire hierarchy.
+`virtual function void add_log_file_otf(string log_file_name, string message_id)`::
+Allows adding a log file and associating it with a message ID "on-the-fly" after the build phase.
+`virtual function void close_files()`::
+Closes all opened log files.
+
+=== sv_virtual_report_server.sv
+
+This class is a custom `uvm_report_server` that replaces the default UVM server. Its primary role is to intercept all UVM report messages, process them based on potentially multiple message IDs, and route them to specific report servers (formatters) or apply custom actions.
+
+Key methods:
+
+* `function new(string name)`: Constructor.
+* `virtual function void set_default_srvr(uvm_report_server srvr)`: Sets the default report server.
+* `virtual function void set_srvr_per_id(uvm_report_server srvr, string id)`: Assigns a specific report server to a given message ID.
+* `virtual function uvm_report_server get_srvr(string id)`: Retrieves the report server for a given message ID.
+* `virtual function void process_report_message(uvm_report_message report_message)`: Overrides the core UVM message processing to handle multi-ID messages, re-evaluate settings, and route to appropriate formatters.
+* `virtual function string compose_report_message(uvm_report_message report_message, string report_object_name = "")`: Overrides the default message composition to provide a custom format.
+
+=== sv_report_server.sv
+
+This class is a simple custom `uvm_report_server` that provides a human-readable, formatted output for UVM messages. It extends `uvm_default_report_server` and specifically overrides the `compose_report_message` function.
+
+Key method:
+
+* `virtual function string compose_report_message(uvm_report_message report_message, string report_object_name = "")`: Formats the message as "Severity | @Time | ID | Message (with file:line)".
+
+=== sv_report_server_json.sv
+
+This class is a specialized `uvm_report_server` designed to output UVM messages in a structured JSON format. This is particularly useful for automated log parsing, analysis, and integration with external tools or databases.
+
+Key methods:
+
+* `virtual function string compose_report_message(uvm_report_message report_message, string report_object_name = "")`: Formats the message as a JSON string.
+* `virtual function string convert2json(string dict[string], string ordered_key[$])`: Helper to convert an associative array to a JSON string.
+* `function void sv_string_join(string src[$], string delimiter, ref string dst)`: Helper to join a string queue.
+
+== Integration and Usage Examples
+
+To effectively use the `sv_logger_pkg`, follow these steps in your UVM testbench.
+
+=== Setting up the Global Report Server
+
+You must replace the default UVM report server with an instance of `sv_virtual_report_server`. This is typically done early in your top-level module or in the `build_phase` of your `base_test`.
+
+[source,systemverilog]
+----
+// In top.sv or base_test::build_phase
+import sv_logger_pkg::*;
+
+class my_base_test extends uvm_test;
+    `uvm_component_utils(my_base_test)
+
+    sv_logger_control logger_ctrl; // Instance of the logger control
+
+    function new(string name = "my_base_test", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+
+        // 1. Instantiate your custom virtual report server
+        sv_virtual_report_server virtual_srvr = sv_virtual_report_server::type_id::create("virtual_report_server");
+
+        // 2. Instantiate other custom report servers (formatters)
+        sv_report_server default_formatter = sv_report_server::type_id::create("default_formatter");
+        sv_report_server_json json_formatter = sv_report_server_json::type_id::create("json_formatter");
+
+        // 3. Set the default server for the virtual server
+        virtual_srvr.set_default_srvr(default_formatter); // Messages not specifically routed will use this formatter
+
+        // 4. Optionally, assign specific formatters to message IDs in the virtual server
+        // This allows routing "JSON_LOG" messages to the JSON formatter.
+        virtual_srvr.set_srvr_per_id(json_formatter, "JSON_LOG");
+
+        // 5. Set your custom virtual server as the global UVM report server
+        uvm_report_server::set_server(virtual_srvr);
+
+        // 6. Instantiate and configure the logger control
+        logger_ctrl = sv_logger_control::type_id::create("logger_ctrl", this);
+        // Set the DUT name and the component scope for hierarchical settings (e.g., uvm_top for global control)
+        logger_ctrl.set_logger("MY_DUT", uvm_top);
+
+        // Configure logger control settings (see next section)
+        // ...
+    endfunction
+    // ... other phases and methods
+endclass
+----
+
+=== 4.2. Configuring sv_logger_control
+
+Once `sv_logger_control` is instantiated and its `set_logger` method is called, you can use its configuration methods to define your desired logging behavior. These calls are typically made in your `uvm_test` or `uvm_env`'s `build_phase`.
+
+[source,systemverilog]
+----
+// Example configuration in my_base_test::build_phase (after logger_ctrl instantiation)
+// Assuming 'logger_ctrl' is accessible here.
+
+// Set a separate output directory for all log files
+logger_ctrl.set_seperate_dir("simulation_logs");
+
+// Set a default log file for messages not redirected elsewhere
+logger_ctrl.set_default_file("full_simulation.log");
+
+// Override default actions for specific severities
+// Example: Suppress all UVM_WARNING messages
+logger_ctrl.add_severity_action(UVM_WARNING, UVM_NO_ACTION);
+// Example: Make all UVM_INFO messages also log to the default file
+logger_ctrl.add_severity_action(UVM_INFO, UVM_LOG | UVM_DISPLAY);
+
+// Redirect messages with specific IDs to their own files
+logger_ctrl.set_log_file_message_id("sequence_debug.log", "SEQ_DBG");
+logger_ctrl.set_log_file_message_id("driver_activity.log", "DRV_ACT");
+logger_ctrl.set_log_file_message_id("scoreboard_errors.log", "SCB_ERR");
+
+// Set verbosity for specific message IDs
+// Example: Show UVM_DEBUG messages only for "AGENT_DETAIL"
+logger_ctrl.set_verbosity_message_id("AGENT_DETAIL", UVM_DEBUG);
+// Example: Suppress all messages with ID "NOISY_INFO"
+logger_ctrl.set_verbosity_message_id("NOISY_INFO", UVM_NONE);
+
+// Set specific actions for a message ID and severity combination
+// Example: For "PROTOCOL_ERR" with UVM_ERROR severity, exit simulation
+logger_ctrl.add_message_id_severity_action("PROTOCOL_ERR", UVM_ERROR, UVM_EXIT);
+// Example: For "DEBUG_WARN" with UVM_WARNING severity, just count it, don't display
+logger_ctrl.add_message_id_severity_action("DEBUG_WARN", UVM_WARNING, UVM_COUNT);
+----
+
+=== Using Custom Report Macros
+
+In your UVM components, sequences, and objects, use the standard UVM report macros (`uvm_info`, `uvm_warning`, etc.). To leverage the multi-ID feature of `sv_virtual_report_server`, concatenate multiple IDs with a semicolon.
+
+First, include the `SV_OBJECT_REPORT` macro in your UVM objects:
+
+[source,systemverilog]
+----
+// In any uvm_component or uvm_object (e.g., driver, monitor, sequence, scoreboard)
+class my_driver extends uvm_driver;
+    `uvm_component_utils(my_driver)
+    `SV_OBJECT_REPORT(my_driver) // Includes the custom reporting macros
+
+    function new(string name = "my_driver", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        // ...
+        // Standard UVM info message
+        `uvm_info("DRV_INFO", "Sending new transaction", UVM_LOW)
+
+        // Using the multi-ID feature
+        // This message will be processed for "DRV_ACT" and "SEQ_DBG" independently
+        `uvm_info("DRV_ACT;SEQ_DBG", $sformatf("Transaction %0d sent", tr.id), UVM_HIGH)
+
+        // Message intended for JSON logging (routed by sv_virtual_report_server)
+        `uvm_info("JSON_LOG", $sformatf("Transaction data: %s", tr.convert2json()), UVM_MEDIUM)
+
+        // Example of an error message that might be redirected or have a specific action
+        `uvm_error("PROTOCOL_ERR", "Invalid protocol sequence detected!", UVM_NONE)
+        // ...
+    endtask
+endclass
+----
+
+=== Example: Basic Setup
+
+This example demonstrates a minimal setup to get the custom logger package running.
+
+[source,systemverilog]
+----
+// File: top_tb.sv
+`include "uvm_pkg.svh" // Use .svh for UVM macros
+`include "sv_logger_pkg.sv" // Include your logger package
+
+module top_tb;
+    import uvm_pkg::*;
+    import sv_logger_pkg::*;
+
+    initial begin
+        // Set the custom virtual report server as the global server
+        // This must be done before any UVM components are built or messages are generated.
+        sv_virtual_report_server virtual_srvr = sv_virtual_report_server::type_id::create("virtual_report_server");
+        sv_report_server default_formatter = sv_report_server::type_id::create("default_formatter");
+        virtual_srvr.set_default_srvr(default_formatter);
+        uvm_report_server::set_server(virtual_srvr);
+
+        // Run the UVM test
+        run_test("my_test");
+    end
+endmodule
+
+// File: my_test.sv
+import uvm_pkg::*;
+import sv_logger_pkg::*;
+
+class my_test extends uvm_test;
+    `uvm_component_utils(my_test)
+    `SV_OBJECT_REPORT(my_test) // Include custom report macros
+
+    sv_logger_control logger_ctrl;
+
+    function new(string name = "my_test", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        logger_ctrl = sv_logger_control::type_id::create("logger_ctrl", this);
+        logger_ctrl.set_logger("MY_DUT", uvm_top); // Configure logger control for uvm_top scope
+
+        // Basic logger configuration
+        logger_ctrl.set_seperate_dir("logs");
+        logger_ctrl.set_default_file("my_test_log.log");
+        logger_ctrl.set_log_file_message_id("debug_info.log", "DBG_MSG");
+        logger_ctrl.set_verbosity_message_id("DBG_MSG", UVM_DEBUG);
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        `uvm_info("MY_TEST", "Starting my_test run", UVM_LOW)
+        `uvm_info("DBG_MSG", "This is a debug message.", UVM_DEBUG)
+        `uvm_warning("WARN_ID", "This is a warning message.", UVM_MEDIUM)
+        `uvm_error("ERR_ID", "This is an error message.", UVM_NONE)
+        #100ns;
+        phase.drop_objection(this);
+    endtask
+endclass
+----
+
+=== Example: Advanced Configuration
+
+This example demonstrates how to use the JSON report server and multi-ID logging.
+
+[source,systemverilog]
+----
+// Continuing from my_test.sv or a separate test
+import uvm_pkg::*;
+import sv_logger_pkg::*;
+
+class my_advanced_test extends my_test; // Extends basic test
+    `uvm_component_utils(my_advanced_test)
+
+    function new(string name = "my_advanced_test", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase); // Call base class build_phase
+
+        // Get handles to the report servers to configure multi-ID routing
+        sv_virtual_report_server virtual_srvr;
+        sv_report_server_json json_formatter;
+
+        if (!$cast(virtual_srvr, uvm_report_server::get_server())) begin
+            `uvm_fatal(get_type_name(), "Could not cast to sv_virtual_report_server");
+        end
+        json_formatter = sv_report_server_json::type_id::create("json_formatter");
+        virtual_srvr.set_srvr_per_id(json_formatter, "JSON_DATA"); // Route "JSON_DATA" messages to JSON formatter
+
+        // Configure logger_control for this advanced test
+        logger_ctrl.set_log_file_message_id("json_output.log", "JSON_DATA"); // Redirect JSON messages to a file
+        logger_ctrl.set_log_file_message_id("multi_id_log.log", "MULTI_ID_A");
+        logger_ctrl.set_log_file_message_id("multi_id_log.log", "MULTI_ID_B"); // Both A and B go to same file
+
+        logger_ctrl.set_verbosity_message_id("MULTI_ID_A", UVM_LOW);
+        logger_ctrl.set_verbosity_message_id("MULTI_ID_B", UVM_HIGH);
+
+        // Make UVM_WARNINGs for "SPEC_WARN" exit the simulation
+        logger_ctrl.add_message_id_severity_action("SPEC_WARN", UVM_WARNING, UVM_EXIT);
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        phase.raise_objection(this);
+        `uvm_info("MY_ADV_TEST", "Starting advanced test run", UVM_LOW)
+
+        // Example of multi-ID message
+        // This message will be processed twice by sv_virtual_report_server
+        // Once for "MULTI_ID_A" and once for "MULTI_ID_B"
+        `uvm_info("MULTI_ID_A;MULTI_ID_B", "This message has multiple IDs.", UVM_MEDIUM)
+
+        // Example of JSON-formatted message
+        `uvm_info("JSON_DATA", "{\"event\":\"transaction_complete\", \"id\":123, \"status\":\"pass\"}", UVM_LOW)
+
+        // Example of a warning that causes exit due to specific action
+        `uvm_warning("SPEC_WARN", "A specific warning that should cause exit.", UVM_MEDIUM)
+
+        #200ns;
+        phase.drop_objection(this);
+    endtask
+endclass
+----

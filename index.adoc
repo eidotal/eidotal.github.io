@@ -15,6 +15,7 @@ include::utils/attribute-include[]
 ****
 // * link:./Pages/DV_Methodolgy.html[DV Methodology]
 * xref:./Pages/DV_Methodolgy.adoc[DV Methodology]
+* xref:./Pages/sv_logger_pkg.adoc[sv_logger_pkg]
 ****
 
 ====
