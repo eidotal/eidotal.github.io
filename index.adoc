@@ -5,17 +5,20 @@ include::utils/attribute-include[]
 
 .About-Me
 ****
-* link:./Pages/CV.html[CV]
+// * link:./Pages/CV.html[CV]
+* xref:./Pages/CV.adoc[CV]
 ****
 
 ''''
 
 .Design Verification
 ****
-* link:./Pages/DV_Methodolgy.html[DV Methodology]
+// * link:./Pages/DV_Methodolgy.html[DV Methodology]
+* xref:./Pages/DV_Methodolgy.adoc[DV Methodology]
 ****
 
 ====
+
 
 // [role="grid-container"]
 // ++++
