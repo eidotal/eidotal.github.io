@@ -4,7 +4,7 @@ include::../utils/attribute-include[]
 == DV Env Structure
 
 .Block Diagram
-image::./DV_ENV.svg[]
+image::./DV_ENV.svg[static,750,role="related thumb center"]
 
 === Generation
 
