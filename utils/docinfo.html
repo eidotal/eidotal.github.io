@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap");
+
+    :root {
+        --bg-color: #f8fafc;
+        --text-color: #1e293b;
+        --sidebar-bg: #ffffff;
+        --nav-bg: #ffffff;
+        --accent-color: #3b82f6;
+        --border-color: #e2e8f0;
+    }
+
+    [data-theme="dark"] {
+        --bg-color: #0f172a;
+        --text-color: #f1f5f9;
+        --sidebar-bg: #1e293b;
+        --nav-bg: #1e293b;
+        --accent-color: #60a5fa;
+        --border-color: #334155;
+    }
+
+    body {
+        font-family: "Inter", sans-serif !important;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding-top: 60px;
+        /* Space for nav */
+        transition: background 0.3s ease;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background: var(--nav-bg);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        z-index: 1000;
+    }
+
+    .nav-logo {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: var(--accent-color);
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle {
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: transparent;
+        color: var(--text-color);
+    }
+
+    /* Adjusted Sidebar */
+    #toc {
+        background: var(--sidebar-bg) !important;
+        border-right: 1px solid var(--border-color) !important;
+        top: 60px !important;
+        height: calc(100vh - 60px) !important;
+    }
+
+    #header,
+    #content {
+        margin-left: 320px;
+        max-width: 850px;
+    }
+</style>
+
+<div class="top-nav">
+    <div class="nav-logo">Project Docs</div>
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
+        <i class="fas fa-moon"></i>
+    </button>
+</div>
+
+<script>
+    function toggleTheme() {
+        const body = document.documentElement;
+        const btn = document.getElementById("theme-btn");
+        if (body.getAttribute("data-theme") === "dark") {
+            body.removeAttribute("data-theme");
+            btn.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+            body.setAttribute("data-theme", "dark");
+            btn.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+    }
+</script>

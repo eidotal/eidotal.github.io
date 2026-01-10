@@ -1,0 +1,16 @@
+########################
+#---gitignore-eidotal---
+#
+#  THINK BEFORE CHANGE
+#_______________________
+########################
+
+**/.vscode
+**/results
+**/outputs
+**/output
+**/__pycache__
+**/.venv
+
+
+
