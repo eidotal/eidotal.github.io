@@ -1,10 +1,11 @@
 = Eido Tal - Wiki
-include::../attribute-include[]
+include::attribute-include[]
+
+ifdef::env-name[:relfilesuffix: .html]
 
 ====
 .CV
 ****
-* link:./Pages/CV.html[CV]
-* link:./Pages/TMP.html[TMP]
+* link:./Pages/CV{relfilesuffix}[CV]
 ****
 ====
