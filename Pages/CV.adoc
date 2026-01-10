@@ -18,12 +18,12 @@ include::../utils/attribute-include[]
 
 [%header,col=4*]
 |===
-|Email |Phone |Address |Linkedin
+|icon:envelope[2x] |icon:phone[2x] |icon:map-marker[2x] |icon:linkedin-square[2x]
 
-|eidotal@gmail.com
+|mailto:{email}[]
 |052-3647491
 |Kfar-Saba, Israel 
-|https://linkedin.com/in/eidotal-bb2692198
+|link:https://www.linkedin.com/in/eido-tal-bb2692198[Linkedin Profile]
 |===
 
 == About
