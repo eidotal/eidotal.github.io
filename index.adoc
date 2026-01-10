@@ -2,10 +2,19 @@
 include::utils/attribute-include[]
 
 ====
-.CV
+
+.About-Me
 ****
 * link:./Pages/CV.html[CV]
 ****
+
+''''
+
+.Design Verification
+****
+* link:./Pages/DV_Methodolgy.adoc[DV Methodology]
+****
+
 ====
 
 // [role="grid-container"]
