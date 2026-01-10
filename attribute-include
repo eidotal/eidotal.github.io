@@ -1,0 +1,16 @@
+:author: Eido Tal
+:email: eidotal@gmail.com
+:attributes:
+:icons: font
+:toc: left
+:toclevels: 3
+:sectnums:
+:sectlinks:
+:sectanchors:
+:hardbreaks-option:
+:!example-caption:
+:!prewrap:
+:source-linenums-option:
+:source-highlighter: pygments
+:pygments-style: lightbulb
+:pygments-linenums-mode: inline

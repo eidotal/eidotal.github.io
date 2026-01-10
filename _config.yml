@@ -1,0 +1,33 @@
+title: Eido Tal - Wiki
+# uncomment baseurl if you want to publish the site to a subfolder
+#baseurl: /your-repo-name
+description: The Jekyll AsciiDoc Quickstart project is a leg-up in starting your own website hosted on GitHub with content based in AsciiDoc.
+
+exclude:
+  - LICENSE
+  - README.adoc
+  - Gemfile
+  - Gemfile.lock
+  - Rakefile
+
+asciidoctor:
+  base_dir: :docdir
+  safe: unsafe
+  attributes:
+    - author=Eido Tal
+    - email=eidotal@gmail.com
+    - icons=font
+    - idseparator=_
+    - stylesdir=css
+    - toc=left
+    - toclevels=3
+    - sectnums
+    - sectlinks
+    - sectanchors
+    - hardbreaks-option
+    - example-caption!
+    - prewrap!
+    - source-linenums-option
+    - source-highlighter=pygments
+    - pygments-style=lightbulb
+    - pygments-linenums-mode=inline

@@ -1,0 +1,74 @@
+= CV – Eido Tal 
+
+// [verse]
+// ____
+// Design Verification Architect & Technical Lead | SystemVerilog/UVM | SoC / Smart-NIC
+// ____
+
+[.text-center]
+[NOTE]
+====
+
+**Design Verification Architect & Technical Lead | SystemVerilog/UVM | SoC / Smart-NIC**
+
+====
+
+''''
+
+[%header,col=4*]
+|===
+|Email |Phone |Address |Linkedin
+
+|eidotal@gmail.com
+|052-3647491
+|Kfar-Saba, Israel 
+|https://linkedin.com/in/eidotal-bb2692198
+|===
+
+== About
+
+Senior Design Verification Engineer and Architect with deep expertise in SystemVerilog/UVM architecture, IP/Top/SoC verification, and architectural flow validation. Proven ability to define verification strategy, build scalable verification environments, and lead cross-functional teams working closely with architects and design engineers. 
+
+Experienced mentor and technical & methodology forum lead, driving verification methodology innovation with a strong focus on correctness, reuse, scalability, and verification efficiency. 
+
+Hands-on Design Verification Architect with experience leading and defining verification of complex Smart-NIC SoCs and packet processor IPs and top-level integrations. 
+
+A highly motivated team player and problem solver. 
+
+== Experience
+
+=== AI-Fabrics (Jan 2026 - Present)
+
+* **Design Verification Technical Lead** (Jan 2026 - Present)
+
+=== Google (Sep 2025 - Jan 2026)
+
+* **Senior Design Verification Engineer** (Sep 2025 - Jan 2026)
+** Contributed to verification of a large-scale super-cluster.
+** Acted as UVM expert, supporting environment architecture and debug.
+
+=== Intel Corporation (Jan 2020 - Sep 2025)
+
+* **Design Verification Technical Lead Engineer** (Jun 2023 - Sep 2025)
+** Verification Technical Lead for a complex packet processing IP used in Smart-NIC products (IPU).
+** Drove verification of full-chip IPU Smart-NIC designs.
+** Defined and led IP, Top, and SoC-level verification strategy.
+** Owned architectural verification of complex networking flows.
+** Led methodology & innovation initiatives across the organization.
+** Established generic verification components and shared infrastructure adopted by multiple teams.
+** Led internal technical forums and mentored junior engineers.
+* **Design Verification Engineer** (Jan 2020 - Jun 2023)
+** Verification owner of a major packet-processing block.
+** Built a new block-level UVM environment from scratch.
+** Participated in IP/Top-level integration verification.
+** Contributed to architectural flow verification and reusable components.
+** Active member of organizational technical forums.
+
+== Education
+
+* **B.Sc. Electrical engineering**, Tel Aviv University
+* **Ostrovsky High School**, Ra’anana
+
+== Skills
+**Programming Language:** SystemVerilog-UVM | Specmen | C | Go | Python | Perl | Matlab
+
