@@ -15,6 +15,9 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - name: Build HTML
@@ -23,9 +26,8 @@ jobs:
           # This builds index.adoc and everything in Pages/
           asciidoctor index.adoc
           find Pages/ -name "*.adoc" -exec asciidoctor {} +
-      - name: Upload to Pages
+      - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v3
-        with:
-          path: "."
-      - name: Deploy
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
