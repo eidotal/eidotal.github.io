@@ -35,6 +35,7 @@ Index-html:
 Pages-html:
 	$(call StageInfo, $@)
 	@mkdir -p output/html/Pages
+	cp Pages/DV_ENV.svg output/html/Pages/
 	asciidoctor Pages/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages
 
 

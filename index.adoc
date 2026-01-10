@@ -12,7 +12,7 @@ include::utils/attribute-include[]
 
 .Design Verification
 ****
-* link:./Pages/DV_Methodolgy.adoc[DV Methodology]
+* link:./Pages/DV_Methodolgy.html[DV Methodology]
 ****
 
 ====

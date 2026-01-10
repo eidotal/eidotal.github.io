@@ -3,6 +3,9 @@ include::../utils/attribute-include[]
 
 == DV Env Structure
 
+.Block Diagram
+image::./DV_ENV.svg[]
+
 === Generation
 
 === Configuration
