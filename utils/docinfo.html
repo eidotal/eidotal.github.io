@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" /> -->
 <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap");
 
@@ -96,6 +96,9 @@
     .admonitionblock.custom-box {
         margin: 1.5rem 0;
         width: 100%;
+        background-color: #f0f8ff;
+        /* border: 1px solid #007acc; */
+        border-left: 6px solid #007acc;
     }
 
     .admonitionblock.custom-box td.content {
@@ -108,14 +111,15 @@
     .admonitionblock.custom-box .icon {
         width: 80px;
         text-align: center;
-        font-size: 1.5rem;
+        /* font-size: 1.5rem; */
+        font-size: 1rem;
     }
 
     /* Specific Role: OWNER */
     .admonitionblock.OWNER td.icon i::before {
-        content: "\f521";
+        content: "\f2bd";
         /* Font Awesome Crown Icon */
-        color: #eab308;
+        color: #007acc;
         /* Gold color */
     }
 
@@ -129,22 +133,29 @@
 </style>
 
 <div class="top-nav">
+    <!-- <button class="menu-btn" onclick="Menu()" id="menu-btn"> -->
+    <!--     <i class="fa fa-bars" aria-hidden="true"></i> -->
+    <!-- </button> -->
     <div class="nav-logo">Wiki</div>
-    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
-        <i class="fas fa-moon"></i>
-    </button>
+    <!-- <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn"> -->
+    <!--     <i class="fas fa-moon"></i> -->
+    <!-- </button> -->
 </div>
 
-<script>
-    function toggleTheme() {
-        const body = document.documentElement;
-        const btn = document.getElementById("theme-btn");
-        if (body.getAttribute("data-theme") === "dark") {
-            body.removeAttribute("data-theme");
-            btn.innerHTML = '<i class="fas fa-moon"></i>';
-        } else {
-            body.setAttribute("data-theme", "dark");
-            btn.innerHTML = '<i class="fas fa-sun"></i>';
-        }
-    }
-</script>
+<!-- <script> -->
+<!--     function Menu() { -->
+<!--          -->
+<!--     } -->
+<!-- </script> -->
+
+<!--     function toggleTheme() { -->
+<!--         const body = document.documentElement; -->
+<!--         const btn = document.getElementById("theme-btn"); -->
+<!--         if (body.getAttribute("data-theme") === "dark") { -->
+<!--             body.removeAttribute("data-theme"); -->
+<!--             btn.innerHTML = '<i class="fas fa-moon"></i>'; -->
+<!--         } else { -->
+<!--             body.setAttribute("data-theme", "dark"); -->
+<!--             btn.innerHTML = '<i class="fas fa-sun"></i>'; -->
+<!--         } -->
+<!--     } -->
