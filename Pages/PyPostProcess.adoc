@@ -1,0 +1,43 @@
+= PyPostProcess.py
+include::../utils/attribute-include[]
+
+== Purpose
+
+The `PyPostProcess.py` script is designed to perform **log analysis** on a simulation's raw output (`runlog.log`) to generate a definitive **pass/fail status** and clean up error reporting. It is executed automatically by `PyRun.py` after every simulation.
+
+=== Key Features
+
+* **Error Detection:** Scans the log file for critical keywords: `"error"`, `"fail"`, and `"fatal"` (case-insensitive).
+* **"Ok Error" Filtering:** Reads a configuration JSON file to filter out expected or benign errors/warnings using **regular expressions**.
+* **UVM Pass Check:** Verifies the presence of the UVM standard pass message, `"UVM Test Passed!"`, as the final success condition.
+* **Result Log:** Generates a summary log, `post_process.log`, which clearly separates true errors from filtered "ok errors".
+
+== Operation
+
+The script determines the simulation status based on two criteria:
+
+1.  **No Critical Errors:** The log must not contain any error keywords that are *not* present in the `--ok_errors` filter file.
+2.  **UVM Success Message:** The log must contain the string `"UVM Test Passed!"`.
+
+If both criteria are met, the script returns an exit code of `0` (Pass); otherwise, it returns `1` (Fail).
+
+== Usage
+
+The script is typically executed by `PyRun.py` but can be run manually for debugging.
+
+[source, bash]
+----
+./scripts/PyPostProcess/PyPostProcess.py <LogFile> \
+    --ok_errors <PATH_TO_JSON_CONFIG> \
+    [--output <FILENAME>] \
+    [--quiet]
+----
+
+|===
+| Argument | Description | Default
+
+| `<LogFile>` | **Required.** The path to the simulation log file to analyze (e.g., `runlog.log`). | -
+| `--ok_errors` | **Required.** Path to the JSON file containing regex patterns for errors to be ignored. | -
+| `--output` | The filename for the generated error summary log. | `post_process.log`
+| `--quiet` | Suppress the final pass/fail printout to `stdout`. | Disabled
+|===

@@ -5,7 +5,6 @@ include::utils/attribute-include[]
 
 .About-Me
 ****
-// * link:./Pages/CV.html[CV]
 * xref:./Pages/CV.adoc[CV]
 ****
 
@@ -13,24 +12,20 @@ include::utils/attribute-include[]
 
 .Design Verification
 ****
-// * link:./Pages/DV_Methodolgy.html[DV Methodology]
 * xref:./Pages/DV_Methodolgy.adoc[DV Methodology]
 * xref:./Pages/sv_logger_pkg.adoc[sv_logger_pkg]
+
+''''
+
+* xref:./Pages/svDV-Overview.adoc[svDV-Overview]
+* xref:./Pages/svDV-README.adoc[svDV-README]
+
+''''
+
+* xref:./Pages/svDV-Tools{relfilesuffix}[svDV-Tools]
+* xref:./Pages/PyRun{relfilesuffix}[PyRun]
+* xref:./Pages/PyRegr{relfilesuffix}[PyRegr]
+* xref:./Pages/PyPostProcess{relfilesuffix}[PyPostProcess]
 ****
 
 ====
-
-
-// [role="grid-container"]
-// ++++
-// <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-//   <div style="padding: 20px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--sidebar-bg);">
-//     <h3>🚀 Quick Start</h3>
-//     <p>Get up and running in less than 5 minutes.</p>
-//   </div>
-//   <div style="padding: 20px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--sidebar-bg);">
-//     <h3>📚 API Reference</h3>
-//     <p>Detailed documentation for all our endpoints.</p>
-//   </div>
-// </div>
-// ++++

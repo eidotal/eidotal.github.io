@@ -1,0 +1,194 @@
+= svDV - Overview
+include::../utils/attribute-include[]
+
+*svDV*(C) is a SystemVerilog-UVM based Design Verification Env. +
+contains:
+
+* Common lib of Generic Componnent
+** Agent
+** Scoreboard
+* Fuly featured DV Env
+
+<<<
+
+== Directory-Stracture
+
+* Doc/
+** -> Diagram/
+** -> LRM/
+* filelists/
+* scripts/
+* src/
+** -> rtl/
+** -> val/
+*** -> common/
+*** -> sv/
+**** -> lib/
+**** -> tb/
+**** -> tests/
+
+== SV-DV Env
+
+`svDV` is a SystemVerilog-UVM based Env.
+
+* Sequence based stimiulus
+* UVM_PHASES & UVM_OBJECTION
+
+== common/
+
+contain generic component ready to reuse. +
+containing:
+
+* common defines
+* bfm_agent
+* scoreboard - TODO
+* Logger_control - TODO
+* Rate_mngr (checker)
+* rate_control (injector)
+
+=== defines/
+
+=== sv_bfm_agent/
+
+=== sv_clk_gen/
+
+=== sv_common_scbd/
+
+=== sv_logger_pkg/
+
+Enable advanced logging capabilities+
+Base UVM reporting mechanaizem is missing features - making it not flexiable enough.
+
+This infrastrucure provieds:
+* *sv_logger_control*
+** Selective Log Seperation Control
+*** select logfile based on MSG-ID
+** Selective Verbosity Control
+*** Verbosity threshold based on MSG-ID
+* *sv_virtual_report_server*
+** Selective Reporting Formatter
+*** ability to set multiple report_server
+
+== sv/
+
+=== Lib/
+
+==== Env
+
+==== Seqlib
+
+==== TI
+
+=== TB
+
+=== Tests
+
+== Methodologies
+
+* Logging methodology
+** Meaning full prints
+** Error Msg
+** Verbosity control & Selective verbosity control
+** Selective Log Seperation
+* Coverage & Configurable Coverage
+** Configurable Coverage - key for reuse
+** Enum in Coverage
+** Transition Coverage
+* Stage randomization
+* Flag Object, State Object, Test Object
+* SV_CREATE - intreducing dynamic factory bypass
+* TI, TB, assertions, forces, connection to DE
+* TLM vs uvm_event
+* Randomization & Constaint
+** Avoid doing randomization functions!
+** Constraints on Base classes should be only legalty constraints
+* Generation - Sequenced based generation
+** Interface sequences
+** Pkt\Trans Virtual sequence - implementing protocol
+** Delay in sequences - not in Agent
+** Randomization in sequences
+** Sequences uese p_sequencer.penv.config for configuration oriated generation
+* asssert, sequene, assume, cover, check, property
+
+
+== TODO
+
+====
+. config
+. config_seq
+. ral
+. shutdown_phase
+. support reset @env
+. scoreboard - finish
+. json dump & load
+. coverage
+. ucs
+. test_object
+. state_object
+. TI improve
+. TB improve
+. scripts:
+.. single run, regression, automations
+.. filelists managmenet
+.. split compilation to multi lib - save time
+
+====
+
+
+== WA
+
+Due to limitiations of Verilator - multiple places where althered to fit.+
+Usually Warping with
+
+[source,SystemVerilog]
+----
+`ifdef VERILATOR
+<...>
+`else
+<....>
+`end
+----
+
+=== Files
+
+====
+. src/val/sv/common/sv_bfm_agent/sv_bfm_driver
+. src/val/sv/common/sv_bfm_agent/sv_bfm_sequencer
+. src/val/sv/lib/env/sv_vsqr.sv
+. uvm/src/seq/uvm_sequencer.sv
+====
+
+=== Type of issues
+
+. Parametrization issues - mainly arround uvm_sequencer
+. std::randomize() - not working
+. uvm_do_on - not working
+. uvm_do_with - not working
+
+
+== Education:
+
+. program vs module
+. design
+. clocking block & mod ports
+. bind interfaces
+. event, uvm_event, uvm_event_pool
+. dump waves
+
+[NOTE]
+.UVM_PHASES
+====
+* build_phase
+* connect_phase
+* end_of_elaburation_phase
+* start_of_simulation_phase
+* run_phase
+** reset_phase
+** configure_phase
+** main_phase
+** shutdown_phase
+* extract_phase
+* check_phase
+* report_phase
+* final_phase
+====

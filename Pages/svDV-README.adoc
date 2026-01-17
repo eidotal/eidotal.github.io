@@ -1,0 +1,221 @@
+= System Verilog-UVM Project
+include::../utils/attribute-include[]
+
+'''
+
+== SystemVerilog-UVM Project
+
+[quote]
+Author: Eido Tal
+
+== Requirement
+
+* verilator
+* verible
+* UVM pkg
+
+'''
+
+== Tools Versions
+
+* UVM_VERSION = Accellera:1800.2-2017:UVM:1.0
+* System-Verilog Version: 1800-2023
+
+'''
+
+== Install & Setup
+
+=== Scripts & Tools
+
+* setup_install.sh
+* setup_verilator.sh
+* setup_uvm.sh
+* Makefile
+* aliases
+* function.zsh
+* complition.zsh
+* PyRun.py
+* PyRegr.py
+* PyPostProcess.py
+* PyFileFormater.py
+
+'''
+
+=== UVM Package
+
+[quote]
+UVM_VERSION = Accellera:1800.2-2017:UVM:1.0
+
+Install UVM pkg via provided automation script
+
+[source,bash]
+----
+source scripts/setup_uvm.sh
+----
+
+'''
+
+=== Verilator
+
+Install Verilator via provided automation script
+
+[source,bash]
+----
+source scripts/setup_verilator.sh
+----
+
+By default, it will locally install from Verilator github repo - latest.
+
+'''
+
+=== Misc
+
+Install other needed program via provided automation script
+
+[source,bash]
+----
+source scripts/setup_verilator.sh
+----
+
+'''
+
+=== SETUP
+
+[source,bash]
+----
+source scripts/aliases
+----
+
+== COMPILATION
+
+=== Normal compilation
+
+[quote]
+PyComp --dut [DUT] --model [MODEL]
+
+[source,bash]
+----
+PyComp --dut sv --model sv
+PyComp --dut sv --model sv_debug
+----
+
+'''
+
+=== Waves compilation
+
+[quote]
+PyComp --dut [DUT] --model [MODEL] --waves
+
+[source,bash]
+----
+PyComp --dut sv --model sv --waves
+----
+
+'''
+
+=== Coverage compilation
+
+[quote]
+PyComp --dut [DUT] --model [MODEL] --cov_en [--waves]
+
+[source,bash]
+----
+PyComp --dut sv --model sv_cov --cov_en
+PyComp --dut sv --model sv_cov --waves --cov_en
+----
+
+'''
+
+== SIMULATION
+
+[source,bash]
+----
+PySim sv_bu_test --dut sv --model sv --plusargs +SV_NUM_OF_TRANS=150 +SV_LOGGER_CONTROL_JSON=1 --waves
+PySim sv_bu_test --dut sv --model sv --plusargs +SV_NUM_OF_TRANS=150 +SV_LOGGER_CONTROL_JSON=1 --cov_en
+PySim sv_bu_test --dut sv --model sv --plusargs +SV_NUM_OF_TRANS=150 +SV_LOGGER_CONTROL_JSON=1 --waves --cov_en
+----
+
+'''
+
+== REGRESSION
+
+[source,bash]
+----
+PyRegr --dut sv --model sv -l src/val/sv/tests/lists/sv_level0.list --serial
+PyRegr --dut sv --model sv -l src/val/sv/tests/lists/sv_level0.list --jobs/-j 3
+PyRegr --dut sv --model sv -l src/val/sv/tests/lists/sv_level0.list -j 3 --save
+----
+
+'''
+
+== CLEAN
+
+[source,bash]
+----
+make clean
+make clean-all
+----
+
+'''
+
+== LINTER
+
+[source,bash]
+----
+make verible-lint
+make verilator-lint
+----
+
+'''
+
+== CTAGS
+
+[source,bash]
+----
+make gen-ctags
+----
+
+'''
+
+PyComp (PyRun comp)
+
+PyRegr -> PySim (PyRun sim) -> make + PyPostProcess
+
+'''
+
++UVM_TESTNAME=<>{plus} +
++UVM_VERBOSITY=<>{plus} +
++UVM_TIMEOUT=<>{plus} +
++UVM_MAX_QUIT_COUNT=<>{plus} +
++UVM_OBJECTION_TRACE+ +
++UVM_CONFIG_DB_TRACE+ +
++UVM_RESOURCE_DB_TRACE+ +
++UVM_DUMP_CMDLINE_ARGS+
+
+'''
+
+== OLD
+
+=== compilation cmd
+
+[source,bash]
+----
+make verilator-CC
+----
+
+'''
+
+=== Example command lines
+
+[source,bash]
+----
+make svDV-Run VERILATOR_NTHREAD=10 WAVES_EN=1 VERILATOR_RUN_NTHREAD=2 TEST_NAME=sv_bu_test
+
+make clean
+make verilator-CC VERILATOR_NTHREAD=10 WAVES_EN=1
+make run_test TEST_NAME=sv_bu_test WAVES_EN=1
+----
+
+'''
+
+PySim --dut sv --model sv sv_bu_bypass_test --plusargs +SV_NUM_OF_TRANS_BYPASS=25 +SV_NUM_OF_TRANS_REGULAR=125 -pla +SV_LOGGER_CONTROL_JSON=1 +SV_GLOBAL_TIMEOUT=1 +SV_LOGGER_CONTROL_SCBD_PRINT_MATCH_ERR_EN=1 --waves --seed 1108491015

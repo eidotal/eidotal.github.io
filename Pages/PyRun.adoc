@@ -1,0 +1,68 @@
+= PyRun.py
+include::../utils/attribute-include[]
+
+== Purpose
+
+The `PyRun.py` script serves as the primary **execution manager** for the verification flow. It handles the construction and execution of specific `make` commands for both **compilation** (`verilator-ALL`) and **single-test simulation** (`run_test`). After simulation, it automatically executes the post-processing script (`PyPostProcess.py`) to determine the final pass/fail status.
+
+=== Key Features
+
+* **Subcommands:** Supports two main modes: `comp` (compilation) and `sim` (simulation).
+* **Unique Paths:** Calculates a unique output directory for simulation results to prevent data overwrites.
+* **Random Seed:** Automatically generates a random seed if one isn't explicitly provided for a simulation run.
+* **Post-Processing Integration:** Calls `PyPostProcess.py` immediately after simulation to validate the results, and the overall exit code reflects both the simulator and the post-processor.
+
+== Usage
+
+The script is invoked using subcommands.
+
+=== Compilation (`comp`)
+
+Used to compile the design under test (DUT) using Verilator, based on a configuration model.
+
+[source, bash]
+----
+./scripts/PyRun/PyRun.py comp \
+    --dut <DUT_NAME> \
+    --model <MODEL_NAME> \
+    [-j <JOBS>] \
+    [--waves] \
+    [--redirect_prints]
+----
+
+|===
+| Argument | Description | Default
+
+| `--dut` | **Required.** Specifies the DUT (Design Under Test). | -
+| `--model` | **Required.** Specifies the configuration model for the DUT (e.g., file lists, options). | -
+| `-j`, `--jobs` | Number of compilation threads to use (`VERILATOR_NTHREAD`). | `16`
+| `--waves` | Enable wave dumping by setting `WAVES_EN=1` in the `Makefile`. | Disabled
+| `--redirect_prints` | Redirects all script output to a file named `PyRun.log` within the output directory. | Disabled
+|===
+
+=== Simulation (`sim`)
+
+Used to run a single test using the previously compiled Verilator binary.
+
+[source, bash]
+----
+./scripts/PyRun/PyRun.py sim <TestName> \
+    [--seed <SEED>] \
+    [--waves] \
+    [-pla <PLUSARGS...>] \
+    [-dirtag <TAGS...>] \
+    [--output <DIR>] \
+    [--redirect_prints]
+----
+
+|===
+| Argument | Description | Default
+
+| `<TestName>` | **Required.** The UVM test name (sets `+UVM_TESTNAME`). | -
+| `--seed` | Set a specific seed for the simulation (`+verilator+seed+<SEED>`). | Random
+| `--waves` | Enable wave dumping (sets `WAVES_EN=1`). | Disabled
+| `-pla`, `--plusargs` | Additional simulation arguments (plusargs) to pass to the binary (`TEST_ARGS`). | -
+| `-dirtag`, `--dirtag` | Tags to append to the results directory name for organization. | -
+| `--output` | The top-level directory where results should be stored. | `results`
+| `--redirect_prints` | Redirects all script output to a file named `PyRun.log` within the output directory. | Disabled
+|===

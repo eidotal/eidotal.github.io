@@ -1,0 +1,88 @@
+= svDV-Tools
+include::../utils/attribute-include[]
+
+== Overview
+
+For this project, the following tools are been utilized:
+
+* Verilator - compiler-simulator - open source
+** Version: "Verilator 5.034 2025-02-24 rev fedora-5.034"
+** z3prover/z3 - Constraint Solver - open source 
+* Vaporview - Vscode extention to view waves - open source
+* Verible - open source
+** linter
+** formater
+* Text Editor\IDEs
+** vim\nvim
+** vscode
+* editorconfig
+* GNU-Makefile
+* Git
+
+In addition, this project is using "Verilator" as the compiler-simulator.
+
+== Tools
+
+=== Compilator-Simulator
+
+`Verilator` is an open source project - tragget to be a fast compiler-simulator for system-verilog.
+
+Currently, `verilator` support for Design-Verification is still partial and under work. But, already enough support has been added.
+
+[NOTE]
+====
+`Verilator` currently cannot fully compile UVM framework as is. +
+A special version of UVM 2017 is been used - provided by `verilator` team.
+====
+
+For constraint solver - `Verilator` uses and external tool. +
+    `z3prover/z3` - is an open source constraint solver by Microsoft.
+
+=== Linter, Formatter and more
+
+`Verible` is a swipe of open source utility tools deveoped by Google
+
+== Setup
+
+=== Filelists
+
+=== Scripts
+
+=== Makefile
+
+=== How To Run
+
+When starting:
+
+[source,zsh]
+----
+source scripts/aliases
+----
+
+[source,zsh]
+.Compile
+----
+make verilator-CC
+----
+
+Outcome:
+. output/<files>
+. output/svDV - executable
+
+.Run
+[source,zsh]
+----
+make run_test TEST_NAME="<test name>" TEST_ARGS="<>"
+----
+
+or:
+
+[source,zsh]
+----
+make svDV-Run VERILATOR_NTHREAD=10 WAVES_EN=1 VERILATOR_RUN_NTHREAD=2 TEST_NAME=sv_bu_test
+
+make clean
+make verilator-CC VERILATOR_NTHREAD=10 WAVES_EN=1
+make run_test TEST_NAME=sv_bu_test WAVES_EN=1
+----
+

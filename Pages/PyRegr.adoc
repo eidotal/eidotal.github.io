@@ -1,0 +1,54 @@
+= PyRegr.py
+include::../utils/attribute-include[]
+
+== Purpose
+
+The `PyRegr.py` script is the **regression manager** responsible for running multiple simulations defined in a test list file (`.list`). It orchestrates the execution, handles parallelism, and provides a final summary of the entire run.
+
+=== Key Features
+
+* **Test List Parsing:** Reads a list file, supporting per-run configuration through special directives.
+* **Parallel Execution:** Uses a thread pool to run multiple tests simultaneously for efficiency (default 16 threads).
+* **Environment Setup:** Ensures correct execution by sourcing `scripts/aliases` before running each test command.
+* **Summary Reporting:** Prints a comprehensive summary showing the command, duration, and final status (PASS/FAIL) for every job.
+
+== Regression List Directives
+
+The list file specifies tests line by line and supports the following special directives:
+
+|===
+| Directive | Description | Example
+
+| `.default <ARGS>` | Appends `<ARGS>` as a default set of arguments to every test command that follows. | `.default -pla +TIMEOUT=1000`
+| `.repeat <N>` | Repeats the next test entry `<N>` times. | `.repeat 5`
+| `.include <PATH>` | Includes and parses another regression list file. | `.include basic/smoke.list`
+|===
+
+The script automatically prepends the necessary path and arguments to each test line, turning:
+
+`sv_base_test --waves`
+
+into:
+
+`$SV_WA/scripts/PyRun/PyRun.py sim --output regression/<PATH> --redirect_prints sv_base_test --waves <DEFAULTS>`.
+
+== Usage
+
+[source, bash]
+----
+./scripts/PyRegr/PyRegr.py -l <REGRESSION_LIST_FILE> \
+    [-j <JOBS>] \
+    [--dirtag <TAG>] \
+    [--serial] \
+    [--dry_run]
+----
+
+|===
+| Argument | Description | Default
+
+| `-l`, `--list` | **Required.** Path to the regression list file (`.list`). | -
+| `-j`, `--jobs` | Number of parallel threads (tests) to run. | `16`
+| `--dirtag` | A tag to append to the top-level regression directory name. | -
+| `--serial` | Force the regression to run one test at a time, sequentially. | Disabled
+| `--dry_run` | Parses the list and creates the full command list file (`__full.list`) but does **not** execute any tests. | Disabled
+|===
