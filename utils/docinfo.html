@@ -72,13 +72,64 @@
 
     #header,
     #content {
-        margin-left: 320px;
+        /* margin-left: 320px; */
+        margin-left: 75px;
         max-width: 850px;
+    }
+
+    /* div.exampleblock.OWNER { */
+    /*     background-color: #f0f8ff; */
+    /*     border-left: 6px solid #007acc; */
+    /*     padding: 1.25em; */
+    /*     margin-bottom: 1.25em; */
+    /**/
+    /*     .content { */
+    /*         background-color: #f0f8ff; */
+    /*         padding: 0; */
+    /*         margin: 0; */
+    /*         border: none; */
+    /*         box-shadow: none; */
+    /*     } */
+    /* } */
+
+    /* Custom Admonition Container */
+    .admonitionblock.custom-box {
+        margin: 1.5rem 0;
+        width: 100%;
+    }
+
+    .admonitionblock.custom-box td.content {
+        padding-left: 1.25rem;
+        border-left: 1px solid var(--border-color);
+        color: var(--text-color);
+    }
+
+    /* Icon Styling */
+    .admonitionblock.custom-box .icon {
+        width: 80px;
+        text-align: center;
+        font-size: 1.5rem;
+    }
+
+    /* Specific Role: OWNER */
+    .admonitionblock.OWNER td.icon i::before {
+        content: "\f521";
+        /* Font Awesome Crown Icon */
+        color: #eab308;
+        /* Gold color */
+    }
+
+    /* Specific Role: SECURITY */
+    .admonitionblock.SECURITY td.icon i::before {
+        content: "\f3ed";
+        /* Font Awesome Shield Icon */
+        color: #ef4444;
+        /* Red color */
     }
 </style>
 
 <div class="top-nav">
-    <div class="nav-logo">Project Docs</div>
+    <div class="nav-logo">Wiki</div>
     <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">
         <i class="fas fa-moon"></i>
     </button>

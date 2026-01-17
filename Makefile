@@ -13,8 +13,8 @@ endef
 
 
 ifndef ASCIIDOCTOR_ARGS
-# ASCIIDOCTOR_ARGS = -a relfilesuffix=.html -a docinfodir=${WA}/utils -a docinfo=shared
-ASCIIDOCTOR_ARGS = -a relfilesuffix=.html
+ASCIIDOCTOR_ARGS = -a relfilesuffix=.html -a docinfodir=${WA}/utils -a docinfo=shared
+# ASCIIDOCTOR_ARGS = -a relfilesuffix=.html
 endif
 
 
@@ -38,8 +38,22 @@ Pages-html:
 	cp Pages/DV_ENV.svg output/html/Pages/
 	asciidoctor Pages/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages
 
-
-.PHONY:open-idex
-open-idex:
+.PHONY:open
+open:
 	$(call StageInfo, $@)
 	firefox -new-window output/html/index.html
+
+# --------------------------------------------------------
+ifndef INSTALL_CMD
+INDTALL_CMD = apt-get install -y
+endif
+
+.PHONY: install
+install:
+	sudo $(INSTALL_CMD) asciidoctor gem
+	sudo gem install pygments.rb
+
+.PHONY: create
+create:
+	asciidoctor index.adoc
+	asciidoctor Pages/*.adoc $(ASCIIDOCTOR_ARGS)

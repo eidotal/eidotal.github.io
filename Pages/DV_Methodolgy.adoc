@@ -1,6 +1,12 @@
 = DV Methodology
 include::../utils/attribute-include[]
 
+// [.OWNER]
+[NOTE, role="custom-box OWNER"]
+====
+**Owner:** `@eidotal`
+====
+
 == DV Env Structure
 
 The testbench is architected as a modular, layered UVM environment, separating stimulus generation, protocol driving, monitoring, checking, configuration, and results verification into clearly defined and reusable components. This structure enforces separation of concerns, improves scalability, and enables efficient debug and reuse across projects.
