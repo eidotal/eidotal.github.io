@@ -45,7 +45,7 @@ open:
 
 # --------------------------------------------------------
 ifndef INSTALL_CMD
-INDTALL_CMD = apt-get install -y
+INSTALL_CMD = apt-get install -y
 endif
 
 .PHONY: install
