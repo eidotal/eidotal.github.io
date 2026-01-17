@@ -1,27 +1,16 @@
 = System Verilog-UVM Project
 include::../utils/attribute-include[]
 
-'''
-
-== SystemVerilog-UVM Project
-
-[quote]
-Author: Eido Tal
-
 == Requirement
 
 * verilator
 * verible
 * UVM pkg
 
-'''
-
 == Tools Versions
 
 * UVM_VERSION = Accellera:1800.2-2017:UVM:1.0
 * System-Verilog Version: 1800-2023
-
-'''
 
 == Install & Setup
 
@@ -39,12 +28,12 @@ Author: Eido Tal
 * PyPostProcess.py
 * PyFileFormater.py
 
-'''
-
 === UVM Package
 
-[quote]
+[NOTE]
+====
 UVM_VERSION = Accellera:1800.2-2017:UVM:1.0
+====
 
 Install UVM pkg via provided automation script
 
@@ -52,8 +41,6 @@ Install UVM pkg via provided automation script
 ----
 source scripts/setup_uvm.sh
 ----
-
-'''
 
 === Verilator
 
@@ -66,8 +53,6 @@ source scripts/setup_verilator.sh
 
 By default, it will locally install from Verilator github repo - latest.
 
-'''
-
 === Misc
 
 Install other needed program via provided automation script
@@ -76,8 +61,6 @@ Install other needed program via provided automation script
 ----
 source scripts/setup_verilator.sh
 ----
-
-'''
 
 === SETUP
 
@@ -90,8 +73,10 @@ source scripts/aliases
 
 === Normal compilation
 
-[quote]
+[NOTE]
+====
 PyComp --dut [DUT] --model [MODEL]
+====
 
 [source,bash]
 ----
@@ -99,32 +84,30 @@ PyComp --dut sv --model sv
 PyComp --dut sv --model sv_debug
 ----
 
-'''
-
 === Waves compilation
 
-[quote]
+[NOTE]
+====
 PyComp --dut [DUT] --model [MODEL] --waves
+====
 
 [source,bash]
 ----
 PyComp --dut sv --model sv --waves
 ----
 
-'''
-
 === Coverage compilation
 
-[quote]
+[NOTE]
+====
 PyComp --dut [DUT] --model [MODEL] --cov_en [--waves]
+====
 
 [source,bash]
 ----
 PyComp --dut sv --model sv_cov --cov_en
 PyComp --dut sv --model sv_cov --waves --cov_en
 ----
-
-'''
 
 == SIMULATION
 
