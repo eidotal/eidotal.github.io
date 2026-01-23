@@ -60,4 +60,4 @@ install:
 .PHONY: create
 create:
 	asciidoctor index.adoc
-	asciidoctor Pages/*.adoc $(ASCIIDOCTOR_ARGS)
+	asciidoctor Pages/*/*.adoc $(ASCIIDOCTOR_ARGS)
