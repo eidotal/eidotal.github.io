@@ -1,5 +1,5 @@
 = CV – Eido Tal 
-include::../utils/attribute-include[]
+include::../../utils/attribute-include[]
 
 // [verse]
 // ____

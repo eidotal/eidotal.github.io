@@ -1,5 +1,5 @@
 = PyRun.py
-include::../utils/attribute-include[]
+include::../../utils/attribute-include[]
 
 == Purpose
 

@@ -1,0 +1,63 @@
+= Workflow-Asciidoc
+include::../../utils/attribute-include[]
+
+== Toolchain
+
+Dependency:
+
+* asciidoctor
+* asciidoctor-pdf
+* pygments.rb
+
+====
+[lead.text-center]
+Simple Usage
+
+[source,shell]
+----
+asciidoctor *.adoc -D output
+# or
+asciidoctor <FILE>.adoc -o output/<FILE>.html
+----
+
+''''
+
+[source,shell]
+----
+asciidoctor-pdf *.adoc -D output
+# or
+asciidoctor-pdf <FILE>.adoc -o output/<FILE>.pdf
+----
+====
+
+====
+Makefile Example
+[source,makefile]
+----
+ifndef ASCIIDOCTOR_ARGS
+ASCIIDOCTOR_ARGS = -a relfilesuffix=.html
+endif
+
+.PHONY:file-html
+file-html:
+	$(call StageInfo, $@)
+	@mkdir -p output/html
+	asciidoctor *.adoc $(ASCIIDOCTOR_ARGS) -D output/html
+----
+====
+
+== Information
+
+.Links
+====
+.asciidoc-documentation
+****
+* link:https://docs.asciidoctor.org/asciidoc/latest/[asciidoc-doc]
+* link:https://docs.asciidoctor.org/asciidoctor/latest/features/[asciidoctor-doc]
+****
+.source-highlighter
+****
+* link:https://pygments.org/styles/[pygments-style]
+* link:https://pygments.org/languages/[pygments-language]
+****
+====

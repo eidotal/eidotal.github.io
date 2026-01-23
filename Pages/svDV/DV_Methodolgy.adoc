@@ -1,5 +1,5 @@
 = DV Methodology
-include::../utils/attribute-include[]
+include::../../utils/attribute-include[]
 
 // [.OWNER]
 [NOTE, role="custom-box OWNER"]

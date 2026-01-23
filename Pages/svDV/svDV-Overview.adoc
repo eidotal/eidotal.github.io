@@ -1,5 +1,5 @@
 = svDV - Overview
-include::../utils/attribute-include[]
+include::../../utils/attribute-include[]
 
 *svDV*(C) is a SystemVerilog-UVM based Design Verification Env. +
 contains:

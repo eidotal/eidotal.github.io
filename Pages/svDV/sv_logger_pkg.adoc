@@ -1,6 +1,6 @@
 = sv_logger_pkg
 Advanced UVM Reporting and Logging Framework
-include::../utils/attribute-include[]
+include::../../utils/attribute-include[]
 
 This document provides comprehensive documentation for the `sv_logger_pkg` SystemVerilog package, an advanced framework designed to enhance UVM (Universal Verification Methodology) reporting and logging capabilities. It offers centralized control, flexible message routing, custom formatting, and support for multi-ID reporting, significantly improving testbench debuggability and log analysis.
 

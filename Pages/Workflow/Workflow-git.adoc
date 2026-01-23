@@ -1,0 +1,100 @@
+= Workflow - Git
+include::../../utils/attribute-include[]
+
+== Create New Repo
+
+[%nowrap%linenums,console]
+----
+$ mkdir <REPO_NAME>
+$ cd <REPO_NAME>
+$ git init
+$ touch <File>
+$ git add .
+$ git commit -m "<commit message>"
+$ git remote add origin $GITREPO/<REPO_NAME>
+$ git push --set-upstream origin master
+----
+
+== Clone Repo
+
+== Normal Workflow
+
+== Branch Workflow
+
+[%nowrap%linenums,bash]
+----
+git clone -b <BRANCH_NAME>
+git push --all
+git pull --all
+
+git branch
+
+git checkout <branch>
+
+git merge <>
+----
+
+=== Delete Branch
+
+Local Branch:
+[%nowrap%linenums,bash]
+----
+git branch -d <Branch Name>
+----
+
+Remote Branch:
+
+[%nowrap%linenums,bash]
+----
+git push origin --delete <Branch Name>
+git push origin :<Branch Name>
+----
+
+Clean up stale local remote-tracking branches:
+
+* git fetch --prune
+* git fecth -p
+
+== Delete files from Git 
+
+Delete & remove file:
+
+[%nowrap%linenums,bash]
+----
+git rm <FILE>
+----
+
+Delete file only from git, not from dir:
+
+[%nowrap%linenums,bash]
+----
+ git rm --cached <FILE>
+----
+
+== tags
+
+.Annotated-Tag
+[%nowrap%linenums,bash]
+----
+git tag -a "<TAG_NAME>" -m "<TAG_COMMENT>" <COMMIT_HASH>
+----
+
+.Lightweight-Tag
+[%nowrap%linenums,bash]
+----
+git tag "<TAG_NAME>" <COMMIT_HASH>
+----
+
+== Worktree Workflow
+
+== Information
+
+====
+.Git-documentation
+****
+* link:https://git-scm.com/docs[git-doc]
+****
+====
+
+
+
