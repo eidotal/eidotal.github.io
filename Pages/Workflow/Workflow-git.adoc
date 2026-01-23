@@ -17,6 +17,31 @@ $ git push --set-upstream origin master
 
 == Clone Repo
 
+[source, bush]
+----
+git clone <SRC> <DST>
+git clone <SRC> -b <branch> <DST>
+----
+
+
+[source, bush]
+----
+git checkout <branch>
+git checkout -b <branch>
+----
+
+[source, bush]
+----
+git rebese
+git rebese -i
+git pull --rebese
+----
+
+[source, bush]
+----
+git pull origin main
+----
+
 == Normal Workflow
 
 == Branch Workflow
