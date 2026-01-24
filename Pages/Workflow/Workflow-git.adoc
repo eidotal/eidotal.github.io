@@ -15,32 +15,93 @@ $ git remote add origin $GITREPO/<REPO_NAME>
 $ git push --set-upstream origin master
 ----
 
+''''
+
 == Clone Repo
 
-[source, bush]
+[source, bash]
 ----
 git clone <SRC> <DST>
 git clone <SRC> -b <branch> <DST>
 ----
 
+''''
 
-[source, bush]
+[source, bash]
 ----
 git checkout <branch>
 git checkout -b <branch>
 ----
 
-[source, bush]
+''''
+
+[source, bash]
+----
+git add <...>
+----
+
+''''
+
+[source, bash]
+----
+git commit -m "<MSG>"
+git commit --amend
+----
+
+''''
+
+=== Pull, Rebase
+
+[source, bash]
+----
+git fetch
+git merge
+----
+
+''''
+
+[source, bash]
+----
+git pull
+git pull origin main
+----
+
+''''
+
+[source, bash]
 ----
 git rebese
 git rebese -i
 git pull --rebese
 ----
 
-[source, bush]
+''''
+
+=== Revert
+
+[source, bash]
 ----
-git pull origin main
+git revert <COMMIT_HASH>
 ----
+
+''''
+
+[source, bash]
+----
+git blame <...>
+----
+
+''''
+
+=== Clone a repo into a new repo
+
+[source, bash]
+----
+git clone --bare
+git push --mirror <DST>
+----
+
+''''
 
 == Normal Workflow
 
