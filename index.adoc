@@ -3,37 +3,32 @@ include::utils/attribute-include[]
 
 ====
 
-.About-Me
+.About
 ****
 * xref:./Pages/About/CV.adoc[CV]
 ****
 
 ''''
 
-.Design Verification
-****
-* xref:./Pages/svDV/DV_Methodolgy.adoc[DV Methodology]
-* xref:./Pages/svDV/sv_logger_pkg.adoc[sv_logger_pkg]
-
-''''
-
-* xref:./Pages/svDV/svDV-Overview.adoc[svDV-Overview]
-* xref:./Pages/svDV/svDV-README.adoc[svDV-README]
-
-''''
-
-* xref:./Pages/svDV/svDV-Tools.adoc[svDV-Tools]
-* xref:./Pages/svDV/PyRun.adoc[PyRun]
-* xref:./Pages/svDV/PyRegr.adoc[PyRegr]
-* xref:./Pages/svDV/PyPostProcess.adoc[PyPostProcess]
-****
-
-''''
-
 .Workflow
 ****
-* xref:./Pages/Workflow/Workflow-git.adoc[Workflow-git]
 * xref:./Pages/Workflow/Workflow-asciidoc.adoc[Workflow-asciidoc]
+* xref:./Pages/Workflow/Workflow-gemini-git.adoc[Workflow-gemini-git]
+* xref:./Pages/Workflow/Workflow-git.adoc[Workflow-git]
+****
+
+''''
+
+.Svdv
+****
+* xref:./Pages/svDV/DV_Methodolgy.adoc[DV_Methodolgy]
+* xref:./Pages/svDV/PyPostProcess.adoc[PyPostProcess]
+* xref:./Pages/svDV/PyRegr.adoc[PyRegr]
+* xref:./Pages/svDV/PyRun.adoc[PyRun]
+* xref:./Pages/svDV/svDV-Overview.adoc[svDV-Overview]
+* xref:./Pages/svDV/svDV-README.adoc[svDV-README]
+* xref:./Pages/svDV/svDV-Tools.adoc[svDV-Tools]
+* xref:./Pages/svDV/sv_logger_pkg.adoc[sv_logger_pkg]
 ****
 
 ====

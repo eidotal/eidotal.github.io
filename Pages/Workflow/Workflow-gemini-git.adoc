@@ -1,0 +1,142 @@
+= Recommended Git Workflow & Best Practices
+include::../../utils/attribute-include[]
+
+This document outlines the standard **Feature Branch Workflow** used by our team to ensure code quality, maintainability, and a clean project history.
+
+== The Core Workflow
+
+We follow a structured flow to keep the `main` branch stable at all times.
+
+[attachment_0](attachment)
+
+=== Step 1: Sync Your Local Environment
+Before starting new work, always ensure your local `main` is up to date.
+[source,bash]
+----
+git checkout main
+git pull origin main
+----
+
+=== Step 2: Create a Feature Branch
+Use descriptive naming conventions: `feature/`, `fix/`, or `docs/`.
+[source,bash]
+----
+git checkout -b feature/issue-123-login-logic
+----
+
+=== Step 3: Develop and Commit
+Atomic commits are preferred. Each commit should represent one logical change.
+[source,bash]
+----
+git add .
+git commit -m "feat: implement JWT authentication logic"
+----
+
+=== Step 4: Rebase and Push
+Before opening a Pull Request (PR), rebase onto the latest `main` to avoid "merge bubbles" and resolve conflicts locally.
+[source,bash]
+----
+git fetch origin
+git rebase origin/main
+git push origin feature/issue-123-login-logic --force-with-lease
+----
+
+---
+
+== Pro Usage & Tips
+
+### Atomic Commits
+Keep changes small. If a commit fixes a bug *and* refactors a library, split them. This makes `git revert` much safer.
+
+### Meaningful Commit Messages
+Follow the **Conventional Commits** specification:
+* `feat:` A new feature
+* `fix:` A bug fix
+* `docs:` Documentation only changes
+* `refactor:` Code change that neither fixes a bug nor adds a feature
+
+### The "Golden Rule" of Rebasing
+* **Never** rebase branches that have been shared with others (like `main`).
+* **Always** rebase your private feature branch to keep history linear.
+
+---
+
+== Git Pro Commands (The Power User Toolbox)
+    
+[%header%autowidth,stripes=odd]
+|===
+| Command | Purpose
+| `git add -p` | **Interactive Staging:** Choose specific hunks of code to commit rather than the whole file.
+| `git commit --amend` | **Fix Last Commit:** Add forgotten changes or fix a typo in the last commit message.
+| `git cherry-pick <hash>` | **Selective Merge:** Apply a specific commit from another branch onto your current one.
+| `git stash save "message"` | **Context Switching:** Temporarily shelve uncommitted changes to work on something else.
+| `git log --graph --oneline` | **Visual History:** View a compact, graphical representation of your branch history.
+| `git reflog` | **The Safety Net:** Shows a log of where your HEAD has been. Use this to recover "lost" commits.
+| `git bisect` | **Debug by Binary Search:** Find the exact commit that introduced a bug.
+|===
+
+---
+
+[IMPORTANT]
+====
+Always use `--force-with-lease` instead of `--force`. It prevents you from accidentally overwriting someone else's work if they pushed to your branch while you were rebasing.
+====
+
+== Submodule Workflow (Advanced)
+
+Submodules are separate repositories embedded inside your main project. They do not track "branches"; they track **specific commit hashes**.
+
+
+
+=== Initializing a Project with Submodules
+When cloning a repository that uses submodules for the first time:
+[source,bash]
+----
+git clone --recursive <repository-url>
+----
+If you've already cloned it, initialize them with:
+[source,bash]
+----
+git submodule update --init --recursive
+----
+
+=== Updating Submodules to Latest Remote
+If your teammates updated a submodule and you need the latest version:
+[source,bash]
+----
+git submodule update --remote --merge
+----
+
+=== Making Changes Inside a Submodule
+If you need to modify code within the submodule:
+1. Navigate to the submodule directory.
+2. Checkout a branch (submodules often sit in a "detached HEAD" state).
+3. Commit and **push** the submodule changes first.
+4. Go back to the main project and commit the new **submodule pointer**.
+
+[source,bash]
+----
+cd path/to/submodule
+git checkout main
+# ... make changes ...
+git commit -am "fix: update submodule logic"
+git push origin main
+
+cd ../.. 
+git add path/to/submodule
+git commit -m "chore: update submodule pointer to latest"
+----
+
+[CAUTION]
+====
+**The Golden Rule of Submodules:** Always push changes in the submodule *before* pushing the main project. If you don't, your teammates will get an error because the main project is pointing to a commit hash that doesn't exist on the remote server yet.
+====
+
+=== Removing a Submodule
+It is a multi-step process. Use this clean method:
+[source,bash]
+----
+git rm -f path/to/submodule
+rm -rf .git/modules/path/to/submodule
+# Remove the section from .gitmodules manually if it persists
+----
