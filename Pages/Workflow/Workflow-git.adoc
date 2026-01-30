@@ -93,6 +93,37 @@ git blame <...>
 
 ''''
 
+[source, bash]
+----
+git checkout main
+git fetch
+git checkout [BRANCH]
+git rebase main
+----
+
+[source, bash]
+----
+# git branch -> [Branch]
+git fetch origin main
+git rebase main
+----
+
+[source, bash]
+----
+# git branch -> [Branch]
+git fetch origin
+git rebase origin/main
+----
+
+''''
+
+[source, bash]
+----
+git push --force-with-lease
+----
+
+''''
+
 === Clone a repo into a new repo
 
 [source, bash]
