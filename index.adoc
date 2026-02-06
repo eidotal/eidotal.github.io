@@ -1,14 +1,13 @@
 = Eido Tal - Wiki
 include::utils/attribute-include[]
 
-====
 
 // .About
 // ****
 // * xref:./Pages/About/CV.adoc[CV]
 // ****
 
-''''
+====
 
 .Workflow
 ****
@@ -29,6 +28,20 @@ include::utils/attribute-include[]
 * xref:./Pages/svDV/svDV-README.adoc[svDV-README]
 * xref:./Pages/svDV/svDV-Tools.adoc[svDV-Tools]
 * xref:./Pages/svDV/sv_logger_pkg.adoc[sv_logger_pkg]
+****
+
+''''
+
+.Networking
+****
+* xref:https://medium.com/@tom_84912/sunh-scale-up-network-header-sunh-protocol-for-ai-a7eaeddff5ef[medium-sue-sunh]
+* xref:https://semiengineering.com/multiple-ai-scale-up-options-emerge/
+* xref:https://medium.com/@tom_84912/a-mostly-unbiased-review-of-the-ultra-ethernet-specification-10d816227839[medium-UEC]
+* xref:https://blogs.arista.com/blog/the-sun-rises-on-scale-up-ethernet[ARISTA-Scale-Up]
+* xref:https://www.synopsys.com/articles/ethernet-standards-scale-up-ai.html[synopsys-eth-scale-up]
+* xref:https://www.synopsys.com/blogs/chip-design/verification-of-ual-uec-protocols-for-scalable-hpc-ai-networks-using-synopsys-vip.html[synopsys-vip-uec]
+* xref:https://blogs.cisco.com/datacenter/ultra-ethernet-for-scalable-ai-network-deployment[cisco-uec]
+* xref:https://www.opencompute.org/wiki/Networking/ESUN[opencompute-ESUN]
 ****
 
 ====
