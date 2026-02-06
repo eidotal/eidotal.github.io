@@ -5,7 +5,7 @@ include::utils/attribute-include[]
 
 .About
 ****
-* xref:./Pages/About/CV.adoc[CV]
+// * xref:./Pages/About/CV.adoc[CV]
 ****
 
 ''''
