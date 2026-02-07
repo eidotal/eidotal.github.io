@@ -134,7 +134,35 @@ git push --mirror <DST>
 
 ''''
 
-== Normal Workflow
+== Submodule
+
+[source, bash]
+----
+git submodule add [REPO] [PATH_NAME]
+----
+
+''''
+
+[source, bash]
+----
+cd subip/SV-common
+git checkout R1
+----
+
+''''
+
+[source, bash]
+----
+git clone --recurse-submodules [REPO]
+----
+
+[source, bash]
+----
+git clone [REPO]
+git submodule update --init
+----
+
+''''
 
 == Branch Workflow
 
@@ -153,13 +181,13 @@ git merge <>
 
 === Delete Branch
 
-Local Branch:
+==== Local Branch
 [%nowrap%linenums,bash]
 ----
 git branch -d <Branch Name>
 ----
 
-Remote Branch:
+==== Remote Branch
 
 [%nowrap%linenums,bash]
 ----
@@ -167,7 +195,7 @@ git push origin --delete <Branch Name>
 git push origin :<Branch Name>
 ----
 
-Clean up stale local remote-tracking branches:
+==== Clean up stale local remote-tracking branches
 
 * git fetch --prune
 * git fecth -p
