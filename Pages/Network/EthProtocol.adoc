@@ -11,10 +11,24 @@ This document provides a technical overview of common networking protocols, incl
 
 === Ethernet II (MAC)
 
-Layer: 2
-Header Size: 14 bytes (excluding Preamble/FCS)
+**Standard:** IEEE 802.3 / DIW (No specific RFC, though see RFC 894 for IP over Ethernet)
+**Layer:** 2
+**Header Size:** 14 bytes (excluding Preamble/FCS)
 
 Ethernet II is the most prevalent frame format used in modern TCP/IP networks.
+
+[source,text]
+----
+ 0                   1                   2       
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Destination MAC Address (48)         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             Source MAC Address (48)           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       EtherType (16)          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .Ethernet II Header Fields
 [cols="1,1,3"]
@@ -30,10 +44,22 @@ Ethernet II is the most prevalent frame format used in modern TCP/IP networks.
 
 === IEEE 802.1Q (VLAN)
 
-Layer: 2 (Tagging)
-Header Size: 4 bytes
+**Standard:** IEEE 802.1Q (RFC 2674 defines MIBs)
+**Layer:** 2 (Tagging)
+**Header Size:** 4 bytes
 
 VLAN tags identify membership in a virtual broadcast domain.
+
+[source,text]
+----
+ 0                   1       
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       TPID (0x8100)           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| PCP |D|        VID (12)       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .VLAN Tag Fields
 [cols="1,1,3"]
@@ -48,10 +74,22 @@ VLAN tags identify membership in a virtual broadcast domain.
 
 === MPLS (Multi-Protocol Label Switching)
 
-Layer: 2.5
-Header Size: 4 bytes per label
+**Standard:** RFC 3031 / RFC 3032
+**Layer:** 2.5
+**Header Size:** 4 bytes per label
 
 MPLS forwards packets using short labels instead of IP lookups.
+
+[source,text]
+----
+ 0                   1                   2       
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                Label (20)             | TC  |S|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|    TTL (8)    |
++-+-+-+-+-+-+-+-+
+----
 
 .MPLS Label Stack Entry
 [cols="1,1,3"]
@@ -66,29 +104,81 @@ MPLS forwards packets using short labels instead of IP lookups.
 
 === CSIG (Congestion Signal)
 
-Layer: 2 / 2.5 (implementation dependent)
-Header Size: Typically 4–8 bytes
+**Standard:** No Public RFC (Specification maintained by the CSIG Steering Committee / Industry Consortia)
+**Layer:** 2 / 2.5 (implementation dependent)
+**Header Size:** Typically 4–8 bytes
 
 Used in specialized high-bandwidth environments to communicate congestion metrics.
 
-.CSIG Header (Conceptual)
+.CSIG 4B (4-Byte Variant)
+[source,text]
+----
+ 0                   1                   2       
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Type| Res |            Metric (24)            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.CSIG 4B (4-Byte Variant)
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Type |4 bits |Signal identifier
+|Reserved |4 bits |Reserved for future use
+|Metric |24 bits |Congestion metric (e.g., queue depth)
+|===
+
+.CSIG 8B (8-Byte Variant)
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|    Type (8)   |   Flags (8)   |          Metric (16)          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Timestamp (32)                         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.CSIG 8B (8-Byte Variant)
 [cols="1,1,3"]
 |===
 |Field |Size |Description
 
 |Type |8 bits |Signal identifier
 |Flags |8 bits |Control bits
-|Metric |16 bits |Congestion metric (e.g., queue depth)
+|Timestamp |32 bits |Ingress/Egress timestamp
+|Metric |16 bits |Extended congestion metric
 |===
 
 == Layer 3: Network Protocols
 
 === IPv4
 
-Layer: 3
-Header Size: 20 bytes (minimum)
+**Standard:** RFC 791
+**Layer:** 3
+**Header Size:** 20 bytes (minimum)
 
-Primary internetworking protocol.
+Primary internet networking protocol.
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Version|  IHL  |Type of Service|          Total Length         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Identification        |Flags|      Fragment Offset    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Time to Live |    Protocol   |         Header Checksum       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                       Source IP Address                       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Destination IP Address                     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .IPv4 Header Fields
 [cols="1,1,3"]
@@ -111,10 +201,38 @@ Primary internetworking protocol.
 
 === IPv6
 
-Layer: 3
-Header Size: 40 bytes (fixed)
+**Standard:** RFC 8200
+**Layer:** 3
+**Header Size:** 40 bytes (fixed)
 
 Designed to solve IPv4 address exhaustion.
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Version| Traffic Class |           Flow Label                  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Payload Length        |  Next Header  |   Hop Limit   |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
++                                                               +
+|                                                               |
++                         Source Address                        +
+|                           (128 bits)                          |
++                                                               +
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
++                                                               +
+|                                                               |
++                      Destination Address                      +
+|                           (128 bits)                          |
++                                                               +
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .IPv6 Header Fields
 [cols="1,1,3"]
@@ -131,14 +249,125 @@ Designed to solve IPv4 address exhaustion.
 |Destination Address |128 bits |Receiver IP
 |===
 
+=== IPsec (Encapsulating Security Payload - ESP)
+
+**Standard:** RFC 4303
+**Layer:** 3
+**Header Size:** Variable (Minimum ~32 bytes)
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|               Security Parameters Index (SPI)                 |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                      Sequence Number                          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Payload Data (Variable)                    |
+~                                                               ~
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|     Padding (0-255 bytes)     |  Pad Length   | Next Header   |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                 Integrity Check Value (Variable)              |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.IPsec ESP Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|SPI |32 bits |Security Parameters Index
+|Sequence |32 bits |Anti-replay counter
+|IV |64-128 bits|Initialization Vector
+|ICV |Variable |Integrity Check Value (Trailer)
+|===
+
+=== PSP (PSP Security Protocol)
+
+**Standard:** No Public RFC (Specification by Google/PSP Working Group)
+**Layer:** 3.5 (Transport-independent)
+**Header Size:** 16 bytes
+
+Hardware-offload friendly encryption used in large-scale cloud environments.
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Next Header   | Header Len    |S|D|R|       Reserved          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|               Security Parameters Index (SPI)                 |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                      Initialization Vector                    |
+|                            (64 bits)                          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.PSP Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Next Header |8 bits |Identifier for the next protocol
+|Header Len |8 bits |Total PSP header length
+|S / D |2 bits |Sampled / Direction bits
+|SPI |32 bits |Security Parameters Index
+|IV |64 bits |Initialization Vector
+|===
+
+=== IFA (In-band Flow Analyzer)
+
+**Standard:** Draft-ietf-ippm-ioam-data (Related to IOAM standards like RFC 9197)
+**Layer:** 3 (Telemetry Extension)
+
+IFA embeds metadata into packets to provide per-hop visibility.
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Ver |L|  Res  |   Hop Limit   |         Device ID (High)      |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|         Device ID (Low)       |        Residence Time (High)  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.IFA Metadata Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Version |4 bits |IFA version
+|Hop Limit |8 bits |Max hops to record
+|Device ID |32 bits |Unique identifier of the switch
+|Residence Time|32 bits |Time packet spent in the device
+|===
+
 == Layer 4: Transport Protocols
 
 === UDP (User Datagram Protocol)
 
-Layer: 4 
-Header Size: 8 bytes
+**Standard:** RFC 768
+**Layer:** 4
+**Header Size:** 8 bytes
 
 Lightweight, connectionless transport protocol.
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source Port          |       Destination Port        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|            Length             |           Checksum            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .UDP Header Fields
 [cols="1,1,3"]
@@ -153,10 +382,32 @@ Lightweight, connectionless transport protocol.
 
 === TCP (Transmission Control Protocol)
 
-Layer: 4
-Header Size: 20 bytes (minimum)
+**Standard:** RFC 9293 (replaces RFC 793)
+**Layer:** 4
+**Header Size:** 20 bytes (minimum)
 
 Connection-oriented protocol for reliable delivery.
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source Port          |       Destination Port        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Sequence Number                        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Acknowledgment Number                      |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Data |           |U|A|P|R|S|F|                               |
+| Offset| Reserved  |R|C|S|S|Y|I|            Window             |
+|       |           |G|K|H|T|N|N|                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|           Checksum            |         Urgent Pointer        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Options (if any)                           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .TCP Header Fields
 [cols="1,1,3"]
@@ -174,3 +425,66 @@ Connection-oriented protocol for reliable delivery.
 |Urgent Pointer |16 bits |Urgent data marker
 |===
 
+=== SCTP (Stream Control Transmission Protocol)
+
+**Standard:** RFC 9260 (replaces RFC 4960)
+**Layer:** 4
+**Header Size:** 12 bytes (Common Header)
+
+Supports multi-homing and multi-streaming.
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|     Source Port Number        |     Destination Port Number   |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                        Verification Tag                       |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                            Checksum                           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.SCTP Common Header
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Source Port |16 bits |Sender port
+|Dest Port |16 bits |Receiver port
+|Verification Tag|32 bits |Packet validation
+|Checksum |32 bits |CRC32c
+|===
+
+=== DTLS (Datagram Transport Layer Security)
+
+**Standard:** RFC 6347 (DTLS 1.2) / RFC 9147 (DTLS 1.3)
+**Layer:** 4 (Security for UDP)
+**Header Size:** 13 bytes (Record Header)
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|  Content Type |       Version         |          Epoch        |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                         Sequence Number                       |
+|                            (48 bits)                          |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             Length            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.DTLS Record Header
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Content Type |8 bits |Handshake, Alert, or Data
+|Version |16 bits |DTLS version identifier
+|Epoch |16 bits |Cipher state
+|Sequence Num |48 bits |Counter for replay protection
+|Length |16 bits |Payload length
+|===
