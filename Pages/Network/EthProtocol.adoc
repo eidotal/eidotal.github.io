@@ -178,6 +178,8 @@ Primary internet networking protocol.
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                    Destination IP Address                     |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                    Options                    |    Padding    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ----
 
 .IPv4 Header Fields
@@ -186,17 +188,19 @@ Primary internet networking protocol.
 |Field |Size |Description
 
 |Version |4 bits |Always 4
-|IHL |4 bits |Header length
-|ToS / DSCP |8 bits |Service class
-|Total Length |16 bits |Packet size
+|IHL |4 bits |Internet Header Length is the length of the internet header in 32 bit words. minimum value is 5
+|Type of Service |8 bits |Service class
+|Total Length |16 bits |Total Length is the length of the datagram, measured in octets, including internet header and data.
 |Identification |16 bits |Fragment identification
-|Flags |3 bits |Fragment control
+|Flags |3 bits |Fragment control. Bit 0: RSVD, Bit 1: Dont Fregement, Bit 2: Last/More Fregement
 |Fragment Offset |13 bits |Fragment position
 |TTL |8 bits |Time to Live
-|Protocol |8 bits |Encapsulated L4 protocol (TCP=6, UDP=17)
+|Protocol |8 bits |This field indicates the next level protocol used in the data portion of the internet datagram.
 |Header Checksum |16 bits |Header integrity
 |Source Address |32 bits |Sender IP
 |Destination Address |32 bits |Receiver IP
+|Options |Variable |
+|Padding |Variable | The internet header padding is used to ensure that the internet header ends on a 32 bit boundary. The padding is zero.
 |===
 
 === IPv6
@@ -242,8 +246,8 @@ Designed to solve IPv4 address exhaustion.
 |Version |4 bits |Always 6
 |Traffic Class |8 bits |QoS marking
 |Flow Label |20 bits |Flow identification
-|Payload Length |16 bits |Payload size
-|Next Header |8 bits |Next protocol
+|Payload Length |16 bits |unsigned integer. Length of the IPv6 payload, i.e., the rest of the packet following this IPv6 header, in octets.
+|Next Header |8 bits |Identifies the type of header immediately following the IPv6 header.
 |Hop Limit |8 bits |TTL equivalent
 |Source Address |128 bits |Sender IP
 |Destination Address |128 bits |Receiver IP
@@ -553,39 +557,65 @@ AFH_GEN1->ETYPE_VLAN->VLAN->ETYPE_AFH
 
 ==== AFH_GEN2_2B
 
-**Standard:** 
-**Layer:** 
-**Header Size:**
+*Standard:* OCP SUE-T
+*Layer:* 2.5 (Shim)
+*Header Size:* 2 bytes
 
+The 2B variant is used for internal fabric switching where minimal overhead is required and flow entropy is handled by other means or fixed paths.
+
+[source,text]
+----
+0               1
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|F|C|M|  TTL  |     DSCP    |ECN|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .AFH_GEN2_2B Header Fields
-[cols="1,1,3"]
+[cols="1,1,3", options="header"]
 |===
 |Field |Size |Description
 
-| | |
-| | |
-| | |
-| | |
+|F |1 bit |Format bit (Set to 0 for 2B)
+|C |1 bit |Critical Latency bit (Prioritizes packet in switch queues)
+|M |1 bit |Monitor bit (Triggers IFA or telemetry sampling)
+|TTL |4 bits |Time to Live (Max 15 hops within the SU)
+|DSCP |6 bits |Differentiated Services Code Point (QoS class)
+|ECN |3 bits |Extended Congestion Notification (supports multi-bit marking)
 |===
-
 
 ==== AFH_GEN2_4B
-**Standard:** 
-**Layer:** 
-**Header Size:**
 
+*Standard:* OCP SUE-T
+*Layer:* 2.5 (Shim)
+*Header Size:* 4 byte
+
+The 4B variant adds a Flow Label to the header.
+This is the preferred format for Clos topologies to ensure consistent ECMP (Equal-Cost Multi-Path) hashing across switches.
+
+[source,text]
+----
+0               1               2               3
+0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|F|C|M|  TTL  |     DSCP    |ECN|          Flow Label           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Flow Label (cont)       |           Reserved            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
 
 .AFH_GEN2_4B Header Fields
-[cols="1,1,3"]
+[cols="1,1,3", options="header"]
 |===
 |Field |Size |Description
 
-| | |
-| | |
-| | |
-| | |
+|F |1 bit |Format bit (Set to 1 for 4B)
+|C / M |2 bits |Critical / Monitor bits
+|TTL |4 bits |Time to Live
+|DSCP |6 bits |QoS classification
+|ECN |3 bits |Congestion signaling
+|Flow Label |16 bits |Entropy value for hardware load balancing
+|Reserved |? |Reserved for future use
 |===
-
-
 
