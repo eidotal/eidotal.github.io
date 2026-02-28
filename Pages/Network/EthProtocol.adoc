@@ -619,3 +619,49 @@ This is the preferred format for Clos topologies to ensure consistent ECMP (Equa
 |Reserved |? |Reserved for future use
 |===
 
+== OCP ESUN Protocol
+
+=== EH (ESUN Header)
+
+*Standard:* OCP ESUN
+*Layer:* 3
+*Header Size:* 4 byte
+
+[source,text]
+----
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|Rev|F| EH-COS|ECN|          Flow Label           | TTL | UD|RSV|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+----
+
+.EH (ESUN Header) Fields
+[cols="1,1,3", options="header"]
+|===
+| Field Name |Size |Description
+
+|Rev |2 bits |Revision Number: Allows for future header updates while maintaining backward compatibility.
+|F |1 bit |Flow Label Valid: A flag indicating if the Flow Label field contains valid data for deterministic load balancing.
+|EH-COS |3 bits |Class of Service: Identifies the traffic class. It is a 3-bit version of the IP DSCP field and takes precedence over other CoS tags.+1
+|EH-ECN |2 bits |"Explicit Congestion Notification: Provides fabric feedback for persistent congestion, functioning identically to the ECN bits in an IP TOS field."
+|Flow Label |16 bits |"Entropy for Load Balancing: A source-specific field used by the fabric to achieve better path selection via hashing (e.g., combining DA, SA, and Flow Label)."
+|TTL |4 bits |"Time To Live: Prevents unintended loops in the topology. Each switch decrements this value; if it hits 0, the packet is discarded."
+|UD| 2 bits |User Defined: Information intended to be populated and consumed by transport implementations at the endpoints.
+|RSVD| 2 bits |Reserved: Set aside for future use.
+|===
+
+== Scale-Up Network Header (SUNH)
+
+* link:https://datatracker.ietf.org/doc/draft-herbert-sunh/[SUNH-RFC]
+
+=== SUNH_6B
+
+
+=== SUNH_8B
+
+
+=== SUNH_10B
+
+
+=== SUNH_12B
