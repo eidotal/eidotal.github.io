@@ -488,3 +488,104 @@ Supports multi-homing and multi-streaming.
 |Sequence Num |48 bits |Counter for replay protection
 |Length |16 bits |Payload length
 |===
+
+''''
+
+== OCP SUE Protocols
+
+=== AFH_GEN1
+
+**Standard:** OCP SUE-T
+**Layer:** 2
+**Header Size:** 14 byte
+
+
+.AFH_GEN1 Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Destination MAC |48 bits |Physical address of the receiver
+|Source MAC |48 bits |Physical address of the sender
+|EtherType |16 bits | Header Identificater - Stating this is an AFH_GEN1 Header
+|===
+
+Note: In case VLAN:
+AFH_GEN1->ETYPE_VLAN->VLAN->ETYPE_AFH
+
+
+=== AFH_EXT
+**Standard:** OCP SUE-T 
+**Layer:** L2
+**Header Size:** 2/3 bytes
+
+
+.AFH_EXT_2B Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|AR |1 bits |
+|F |1 bits | F = 0
+|C |1 bits |
+|CMN |1 bits |
+|TTL |4 bits | Time To Live
+|DSCP |6 bits | Service Class
+|ECN |2 bits |
+|===
+
+.AFH_EXT_3B Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|AR |1 bits |
+|F |1 bits | F = 1
+|C |1 bits |
+|CMN |1 bits |
+|TTL |4 bits | Time To Live
+|DSCP |6 bits | Service Class
+|ECN |2 bits |
+|Flow Label |8 bits |Flow identification
+|===
+
+=== AFH_GEN2/UFH
+
+==== AFH_GEN2_2B
+
+**Standard:** 
+**Layer:** 
+**Header Size:**
+
+
+.AFH_GEN2_2B Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+| | |
+| | |
+| | |
+| | |
+|===
+
+
+==== AFH_GEN2_4B
+**Standard:** 
+**Layer:** 
+**Header Size:**
+
+
+.AFH_GEN2_4B Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+| | |
+| | |
+| | |
+| | |
+|===
+
+
+
