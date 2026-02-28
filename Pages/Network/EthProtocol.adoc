@@ -1,0 +1,176 @@
+= Network Protocol Specification
+include::../../utils/attribute-include[]
+
+This document provides a technical overview of common networking protocols, including:
+
+* Header structures
+* Field definitions
+* Architectural placement
+
+== Layer 2: Data Link Protocols
+
+=== Ethernet II (MAC)
+
+Layer: 2
+Header Size: 14 bytes (excluding Preamble/FCS)
+
+Ethernet II is the most prevalent frame format used in modern TCP/IP networks.
+
+.Ethernet II Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Destination MAC |48 bits |Physical address of the receiver
+|Source MAC |48 bits |Physical address of the sender
+|EtherType |16 bits |Encapsulated protocol identifier (e.g., 0x0800 for IPv4, 0x86DD for IPv6)
+|===
+
+== Layer 2.5: Tagging and Labeling
+
+=== IEEE 802.1Q (VLAN)
+
+Layer: 2 (Tagging)
+Header Size: 4 bytes
+
+VLAN tags identify membership in a virtual broadcast domain.
+
+.VLAN Tag Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|TPID |16 bits |Tag Protocol Identifier (0x8100)
+|PCP |3 bits |Priority Code Point (QoS / CoS)
+|DEI |1 bit |Drop Eligible Indicator
+|VID |12 bits |VLAN Identifier (0–4095)
+|===
+
+=== MPLS (Multi-Protocol Label Switching)
+
+Layer: 2.5
+Header Size: 4 bytes per label
+
+MPLS forwards packets using short labels instead of IP lookups.
+
+.MPLS Label Stack Entry
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Label |20 bits |Switching label
+|TC |3 bits |Traffic Class (QoS / ECN)
+|S |1 bit |Bottom of Stack flag
+|TTL |8 bits |Time to Live
+|===
+
+=== CSIG (Congestion Signal)
+
+Layer: 2 / 2.5 (implementation dependent)
+Header Size: Typically 4–8 bytes
+
+Used in specialized high-bandwidth environments to communicate congestion metrics.
+
+.CSIG Header (Conceptual)
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Type |8 bits |Signal identifier
+|Flags |8 bits |Control bits
+|Metric |16 bits |Congestion metric (e.g., queue depth)
+|===
+
+== Layer 3: Network Protocols
+
+=== IPv4
+
+Layer: 3
+Header Size: 20 bytes (minimum)
+
+Primary internetworking protocol.
+
+.IPv4 Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Version |4 bits |Always 4
+|IHL |4 bits |Header length
+|ToS / DSCP |8 bits |Service class
+|Total Length |16 bits |Packet size
+|Identification |16 bits |Fragment identification
+|Flags |3 bits |Fragment control
+|Fragment Offset |13 bits |Fragment position
+|TTL |8 bits |Time to Live
+|Protocol |8 bits |Encapsulated L4 protocol (TCP=6, UDP=17)
+|Header Checksum |16 bits |Header integrity
+|Source Address |32 bits |Sender IP
+|Destination Address |32 bits |Receiver IP
+|===
+
+=== IPv6
+
+Layer: 3
+Header Size: 40 bytes (fixed)
+
+Designed to solve IPv4 address exhaustion.
+
+.IPv6 Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Version |4 bits |Always 6
+|Traffic Class |8 bits |QoS marking
+|Flow Label |20 bits |Flow identification
+|Payload Length |16 bits |Payload size
+|Next Header |8 bits |Next protocol
+|Hop Limit |8 bits |TTL equivalent
+|Source Address |128 bits |Sender IP
+|Destination Address |128 bits |Receiver IP
+|===
+
+== Layer 4: Transport Protocols
+
+=== UDP (User Datagram Protocol)
+
+Layer: 4 
+Header Size: 8 bytes
+
+Lightweight, connectionless transport protocol.
+
+.UDP Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Source Port |16 bits |Sender port
+|Destination Port |16 bits |Receiver port
+|Length |16 bits |Header + data size
+|Checksum |16 bits |Integrity check
+|===
+
+=== TCP (Transmission Control Protocol)
+
+Layer: 4
+Header Size: 20 bytes (minimum)
+
+Connection-oriented protocol for reliable delivery.
+
+.TCP Header Fields
+[cols="1,1,3"]
+|===
+|Field |Size |Description
+
+|Source Port |16 bits |Sender port
+|Destination Port |16 bits |Receiver port
+|Sequence Number |32 bits |Data position in stream
+|Acknowledgment Number |32 bits |Next expected byte
+|Data Offset |4 bits |Header length
+|Flags |9 bits |SYN, ACK, FIN, RST, PSH, URG
+|Window |16 bits |Flow control
+|Checksum |16 bits |Integrity
+|Urgent Pointer |16 bits |Urgent data marker
+|===
+

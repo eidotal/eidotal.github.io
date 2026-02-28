@@ -34,6 +34,10 @@ include::utils/attribute-include[]
 
 .Networking
 ****
+* xref:./Pages/Network/EthProtocol.adoc[ETH-Protocol]
+
+''''
+
 * xref:https://medium.com/@tom_84912/sunh-scale-up-network-header-sunh-protocol-for-ai-a7eaeddff5ef[medium-sue-sunh]
 * xref:https://semiengineering.com/multiple-ai-scale-up-options-emerge/
 * xref:https://medium.com/@tom_84912/a-mostly-unbiased-review-of-the-ultra-ethernet-specification-10d816227839[medium-UEC]

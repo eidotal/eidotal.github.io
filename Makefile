@@ -35,10 +35,13 @@ Index-html:
 Pages-html:
 	$(call StageInfo, $@)
 	@mkdir -p output/html/Pages/About
+	@mkdir -p output/html/Pages/Network
+	@mkdir -p output/html/Pages/About
 	@mkdir -p output/html/Pages/Workflow
 	@mkdir -p output/html/Pages/svDV
 	cp Pages/svDV/DV_ENV.svg output/html/Pages/svDV
 	asciidoctor Pages/About/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/About
+	asciidoctor Pages/Network/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/Network
 	asciidoctor Pages/Workflow/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/Workflow
 	asciidoctor Pages/svDV/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/svDV
 
