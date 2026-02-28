@@ -1,11 +1,93 @@
 = Network Protocol Specification
 include::../../utils/attribute-include[]
+:experimental:
 
 This document provides a technical overview of common networking protocols, including:
 
 * Header structures
 * Field definitions
 * Architectural placement
+
+== Packet Formation
+
+=== L2-Tag
+// [.text-center]
+****
+====
+[**MAC**] -> [**IPv4/6**] -> [**UDP**]
+====
+
+''''
+====
+[**MAC**] -> [**VLAN**] -> [**IPv4/6**] -> [**UDP**]
+
+''''
+
+[**MAC**] -> [**CSIG**] -> [**IPv4/6**] -> [**UDP**]
+
+''''
+
+[**MAC**] -> [**MPLS**] -> [**IPv4/6**] -> [**UDP**]
+====
+
+''''
+
+====
+[**MAC**] -> [**VLAN**] -> [**VLAN**] -> [**IPv4/6**] -> [**UDP**]
+
+''''
+
+[**MAC**] -> [**VLAN**] -> [**CSIG**] -> [**IPv4/6**] -> [**UDP**]
+
+''''
+
+[**MAC**] -> [**VLAN**] -> [**MPLS**] -> [**IPv4/6**] -> [**UDP**]
+====
+
+''''
+
+====
+[**MAC**] -> [**VLAN**] -> [**CSIG**] -> [**MPLS**] -> [**IPv4/6**] -> [**UDP**]
+====
+****
+
+=== L3 Tunnels
+
+****
+====
+[**MAC**] -> [**IPv4**] -> [**GRE**] -> [**MAC**] -> [**IPv6**] -> [**TCP**]
+
+''''
+
+[**MAC**] -> [**IPv4**] -> [**GRE**] -> [**IPv6**] -> [**TCP**]
+====
+
+''''
+
+====
+[**MAC**] -> [**IPv4**] -> [**IPv4**] -> [**UCP**]
+
+''''
+
+[**MAC**] -> [**IPv4**] -> [**IPv6**] -> [**TCP**]
+
+''''
+
+[**MAC**] -> [**IPv6**] -> [**IPv4**] -> [**UCP**]
+
+''''
+
+[**MAC**] -> [**IPv6**] -> [**IPv6**] -> [**TCP**]
+====
+****
+
+=== L4 Tunnels
+
+****
+====
+[**MAC**] -> [**IPv4**] -> [**UDP**] -> [**VXLAN**] -> [**MAC**] -> [**IPv6**] -> [**TCP**]
+====
+****
 
 == Layer 2: Data Link Protocols
 
