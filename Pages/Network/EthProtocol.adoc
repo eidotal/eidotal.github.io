@@ -87,7 +87,7 @@ This document provides a technical overview of common networking protocols, incl
 
 ''''
 
-=== L3 Tunnel 
+=== L3 Tunnel
 
 ****
 ====
@@ -154,7 +154,9 @@ This document provides a technical overview of common networking protocols, incl
 
 ''''
 
-=== UDP_TUNNEL: VXLAN 
+=== L4 Tunnels
+
+==== UDP_TUNNEL: VXLAN
 
 ****
 ====
