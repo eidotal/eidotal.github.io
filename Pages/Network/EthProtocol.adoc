@@ -18,6 +18,7 @@ This document provides a technical overview of common networking protocols, incl
 ====
 
 ''''
+
 ====
 [**MAC**] -> [**VLAN**] -> [**IPv4/6**] -> [**UDP**]
 
