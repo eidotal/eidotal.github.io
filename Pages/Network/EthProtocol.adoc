@@ -901,68 +901,106 @@ AFH_GEN1->ETYPE_VLAN->VLAN->ETYPE_AFH
 
 === AFH_GEN2/UFH
 
-==== AFH_GEN2_2B
+==== AFH_GEN2_16b
 
 *Standard:* OCP SUE-T
 *Layer:* 2.5 (Shim)
-*Header Size:* 2 bytes
+*Header Size:* 14 bytes
 
-The 2B variant is used for internal fabric switching where minimal overhead is required and flow entropy is handled by other means or fixed paths.
+The 16 bits variant is used for internal fabric switching where minimal overhead is required and flow entropy is handled by other means or fixed paths.
 
 [source,text]
 ----
 0               1
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+0 1 2 3 4 5 6 7 0 1 2 3 4 5 6 7
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|F|C|M|  TTL  |     DSCP    |ECN|
+|V|W|R|R|Z|Y|X|M|    Opaque     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             Opaque            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Destination XPU         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|      TC       |    Opaque     |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|            Opaque             |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source XPU           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             ETYPE             |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ----
 
-.AFH_GEN2_2B Header Fields
+.AFH_GEN2_16b Header Fields
 [cols="1,1,3", options="header"]
 |===
 |Field |Size |Description
 
-|F |1 bit |Format bit (Set to 0 for 2B)
-|C |1 bit |Critical Latency bit (Prioritizes packet in switch queues)
-|M |1 bit |Monitor bit (Triggers IFA or telemetry sampling)
-|TTL |4 bits |Time to Live (Max 15 hops within the SU)
-|DSCP |6 bits |Differentiated Services Code Point (QoS class)
-|ECN |3 bits |Extended Congestion Notification (supports multi-bit marking)
+|V               |1 bit  |Version: V = 0 (1 - future)
+|W               |1 bit  |Format (0 - Normal, 1 - Compressed). W = 1
+|R               |1 bit  |Reserved
+|R               |1 bit  |Reserved
+|Z               |1 bit  |0 (AAI encoding per SLAP)
+|Y               |1 bit  |0 (AAI encoding per SLAP)
+|X               |1 bit  |1 (locally assigned)
+|M               |1 bit  |Multicast Packet
+|Opaque          |24 bit |SUE Payload
+|Destination XPU |16 bit |
+|TC              |8 bit  |Traffic Class
+|Opaque          |24 bit |SUE Payload
+|Source XPU      |16 bit |
+|ETYPE           |16 bit |Encapsulated protocol identifier
 |===
 
-==== AFH_GEN2_4B
+==== AFH_GEN2_32
 
 *Standard:* OCP SUE-T
 *Layer:* 2.5 (Shim)
-*Header Size:* 4 byte
+*Header Size:* 14 byte
 
-The 4B variant adds a Flow Label to the header.
+The 32 bits variant adds a Flow Label to the header.
 This is the preferred format for Clos topologies to ensure consistent ECMP (Equal-Cost Multi-Path) hashing across switches.
 
 [source,text]
 ----
-0               1               2               3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|F|C|M|  TTL  |     DSCP    |ECN|          Flow Label           |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|       Flow Label (cont)       |           Reserved            |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+0               1
+0 1 2 3 4 5 6 7 0 1 2 3 4 5 6 7
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|V|W|R|R|Z|Y|X|M| HOPL  |Entropy|
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Destination XPU         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|       Destination XPU         |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|      TC       |    Entropy    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source XPU           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|          Source XPU           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             ETYPE             |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ----
 
-.AFH_GEN2_4B Header Fields
+.AFH_GEN2_32 Header Fields
 [cols="1,1,3", options="header"]
 |===
 |Field |Size |Description
 
-|F |1 bit |Format bit (Set to 1 for 4B)
-|C / M |2 bits |Critical / Monitor bits
-|TTL |4 bits |Time to Live
-|DSCP |6 bits |QoS classification
-|ECN |3 bits |Congestion signaling
-|Flow Label |16 bits |Entropy value for hardware load balancing
-|Reserved |? |Reserved for future use
+|V               |1 bit  |Version: V = 0 (1 - future)
+|W               |1 bit  |Format (0 - Normal, 1 - Compressed). W = 0
+|R               |1 bit  |Reserved
+|R               |1 bit  |Reserved
+|Z               |1 bit  |0 (AAI encoding per SLAP)
+|Y               |1 bit  |0 (AAI encoding per SLAP)
+|X               |1 bit  |1 (locally assigned)
+|M               |1 bit  |Multicast Packet
+|HOPL            |4 bit  |HOP-Limit, similer to Time-To-Live
+|Entropy         |4 bit  |Entropy Spare
+|Destination XPU |32 bit |
+|TC              |8 bit  |Traffic Class
+|Entropy         |8 bit  |Entropy Spare
+|Source XPU      |32 bit |
+|ETYPE           |16 bit |Encapsulated protocol identifier
 |===
 
 == OCP ESUN Protocol

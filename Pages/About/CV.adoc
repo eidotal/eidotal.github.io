@@ -41,6 +41,8 @@ A highly motivated team player and problem solver.
 === AI-Fabrics (Jan 2026 - Present)
 
 * **Design Verification Technical Lead** (Jan 2026 - Present)
+** Leading Verification a Data-Path/Packet-Processing Complex for a switch
+** Packet-Processing/Data-Path architecture
 
 === Google (Sep 2025 - Jan 2026)
 

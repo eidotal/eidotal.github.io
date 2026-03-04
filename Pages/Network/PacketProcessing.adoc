@@ -2,3 +2,31 @@
 include::../../utils/attribute-include[]
 :experimental:
 
+== Overview
+
+In a Packet Processing pipeline there are multiple stages/operation:
+
+* Parsing
+* Classification
+* Mirroring/Multicasting
+* Rate-Limiting/Metering
+* Hashing
+* Modification
+* Statistics/Counting
+
+[source,text]
+----
+
+  +-+-+-+  +-+-+-+-+-+  +-+-+-+  +-+-+-+-+-+-+-+  +-+-+-+-+  +-+-+-+-+-+
+  |     |  |         |  |     |  |             |  |       |  |         |
+->| IN  |->| PARSER  |->| CLS |->| Rate-Limit  |->| HASH  |->| MODIFER |
+  |     |  |         |  |     |  | Meter       |  |       |  |         |
+  |     |  |         |  |     |  |             |  |       |  |         |
+  +-+-+-+  +-+-+-+-+-+  +-+-+-+  +-+-+-+-+-+-+-+  +-+-+-+-+  +-+-+-+-+-+
+ 
+----
+
+[NOTE]
+====
+It is possible to have some of the stages done in parrallel to save on latency.
+====
