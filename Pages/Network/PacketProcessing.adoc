@@ -30,3 +30,24 @@ In a Packet Processing pipeline there are multiple stages/operation:
 ====
 It is possible to have some of the stages done in parrallel to save on latency.
 ====
+
+''''
+
+Meter/Policer
+Mirroring
+Multicasting
+Routing
+Hashing
+Send-to-Host (SWITCH)
+VM2VM (NIC)
+Port-2-Port (NIC)
+MISS-PREPEND
+ACL 
+
+Q 
+VM 
+HOST 
+VF
+PF
+PORT 
+

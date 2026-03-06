@@ -112,7 +112,7 @@ This document provides a technical overview of common networking protocols, incl
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+ <----- MAC_IN0
 |           MAC             |
 |  +-+-+-+-+-+-+-+-+-+-+-+  |
-|  |        ETYPE        |  | <- VLAN
+|  |        ETYPE        |  | <- MPLS
 |  +-+-+-+-+-+-+-+-+-+-+-+  |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+ <----- MPLS_IN0
 |           MPLS            |
@@ -350,6 +350,13 @@ Only on the most outer tunnel.
 |                           |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ----
+
+''''
+
+== Parser Graph
+
+.Parser Graph
+image::./PG.svg[static,750,role="related thumb center"]
 
 ''''
 
