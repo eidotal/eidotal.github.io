@@ -40,10 +40,18 @@ Pages-html:
 	@mkdir -p output/html/Pages/svDV
 	cp Pages/svDV/DV_ENV.svg output/html/Pages/svDV
 	cp Pages/Network/PG.svg  output/html/Pages/Network
+	cp Pages/Network/PPC.svg  output/html/Pages/Network
 	asciidoctor Pages/About/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/About
 	asciidoctor Pages/Network/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/Network
 	asciidoctor Pages/Workflow/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/Workflow
 	asciidoctor Pages/svDV/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/svDV
+
+.PHONY:Diagram
+Diagram:
+	$(call StageInfo, $@)
+	@mkdir -p output/html/Pages/Network
+	mmdc -i Pages/Network/ParseGraph.mmd -o output/html/Pages/Network/PG.mmd.svg
+	d2 Pages/Network/ParseGraph.d2 output/html/Pages/Network/PG.d2.svg
 
 .PHONY:PDF
 PDF:

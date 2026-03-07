@@ -1,0 +1,107 @@
+---
+title: Parse Graph
+displayMode: compact
+config:
+  layout: elk
+  elk:
+    mergeEdges: true
+    nodePlacementStrategy: NETWORK_SIMPLEX
+    forceNodeModelOrder: true
+    cycleBreakingStrategy: MODEL_ORDER
+    considerModelOrder: PREFER_NODES
+  flowchart:
+    curve: rounded
+  theme: dark
+---
+
+flowchart TD
+    subgraph L2 [L2 Layer]
+        MAC
+    end
+
+    subgraph L2TAG [L2 Tagging]
+        VLAN
+        CSIG
+        MPLS
+    end
+
+    subgraph L3 [L3 Layer]
+        subgraph L3-IP
+            IPV4
+            IPV6
+        end
+        subgraph L3-IP-EXT
+            IPV6_EXT
+        end
+        subgraph L3-ICMP
+            ICMP
+            ICMPV6
+        end
+
+    end
+
+    subgraph L4 [L4 Layer]
+        UDP
+        TCP
+    end
+
+    %% L2 Transitions
+    MAC ---> VLAN
+    MAC ---> CSIG
+    MAC ---> MPLS
+
+    %% L2TAG Transitions
+    VLAN --> VLAN
+    VLAN ---> CSIG
+    VLAN ---> MPLS
+    CSIG ---> MPLS
+    MPLS --> MPLS
+
+    %% L2->L3 ; L2TAG->L3
+    MAC ----> IPV4
+    MAC ----> IPV6
+    VLAN ----> IPV4
+    VLAN ----> IPV6
+    CSIG ----> IPV4
+    CSIG ----> IPV6
+    MPLS ----> IPV4
+    MPLS ----> IPV6
+
+    %% L3 Transitions
+    IPV4 --> IPV4
+    IPV6 --> IPV6
+
+    IPV4 --> IPV6
+    IPV6 --> IPV4
+
+    IPV6 ---> IPV6_EXT
+    IPV6_EXT ---> IPV6_EXT
+
+    IPV4 ---> ICMP
+    IPV6 ---> ICMPV6
+    IPV6_EXT ---> ICMPV6
+
+    IPV4 ----> UDP
+    IPV4 ----> TCP
+    IPV6 ----> UDP
+    IPV6 ----> TCP
+    IPV6_EXT ----> UDP
+    IPV6_EXT ----> TCP
+    ICMP ----> UDP
+    ICMP ----> TCP
+    ICMPV6 ----> UDP
+    ICMPV6 ----> TCP
+
+classDef Node fill:#4fd6be,stroke:#000,stroke-width:2px,color:#000
+classDef Layer fill:#c3e88d,stroke:#000,stroke-width:2px,color:#000
+
+class MAC Node
+class VLAN,CSIG,MPLS Node
+class IPV4,IPV6,IPV6_EXT,ICMP,ICMPV6 Node
+class UDP,TCP Node
+
+class L2,L2TAG Layer
+class L3,L3-IP,L3-IP-EXT,L3-ICMP Layer
+class L4 Layer
+
+linkStyle default stroke:#7a2332,curve: linear
