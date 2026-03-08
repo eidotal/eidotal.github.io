@@ -1,0 +1,119 @@
+vars: {
+  d2-config: {
+    layout-engine: elk
+    theme-id:0
+  }
+  color: {
+    blue: '#589ed7'
+    darkblue: '#2d3f76'
+    deepblue: '#2d5e8a'
+    orange: '#ff966c'
+    burntorange: '#ad5b39'
+    green: '#c3e88d'
+    mutedgreen: '#7a9159'
+    teal: '#4fd6be'
+    deepteal: '#2b8272'
+    lavender: '#c099ff'
+    deeplavender: '#7552ad'
+    yellow: '#ffc777'
+    ochre: '#a37a3f'
+    red: '#c53b53'
+    maroon: '#7a2332'
+    gray: '#3b4261'
+    darkgray: '#1b1d2b'
+    pink: '#fca7ea'
+  }
+}
+
+# direction: right
+PG: " Parse Graph" {
+  L2: {
+    MAC: "MAC"
+  }
+  SUE_L2: {
+    AFH_GEN1: "AFH_GEN1"
+    AFH_GEN2_16b: "AFH_GEN2_16b"
+    AFH_GEN2_32b: "AFH_GEN2_32b"
+  }
+  L2TAG: {
+    VLAN: "VLAN"
+    CSIG: "CSIG"
+  }
+  L3: {
+    IPV4: "IPV4"
+    IPV6: "IPV6"
+  }
+
+  L2.MAC -> L2TAG.VLAN
+  L2.MAC -> L2TAG.CSIG
+  L2TAG.VLAN -> L2TAG.VLAN
+  L2TAG.VLAN -> L2TAG.CSIG
+  L2TAG.VLAN -> L3.IPV4
+  L2TAG.VLAN -> L3.IPV6
+  L2TAG.CSIG -> L3.IPV4
+  L2TAG.CSIG -> L3.IPV6
+  L2.MAC -> L3.IPV4
+  L2.MAC -> L3.IPV6
+  L3.IPV4 -> L3.IPV4
+  L3.IPV4 -> L3.IPV6
+  L3.IPV6 -> L3.IPV4
+  L3.IPV6 -> L3.IPV6
+}
+
+# #-----------##
+# # Style ##
+# #-----------##
+
+classes: {
+  PG.style: {
+    stroke-width: 2
+  }
+  Node: {
+    shape: oval
+    style: {
+      stroke-width: 2
+      double-border: true
+    }
+  }
+  Layer: {
+    style: {
+      stroke-width: 2
+      double-border: true
+    }
+  }
+}
+
+PG.class: PG
+PG.*.class: Layer
+PG.*.*.class: Node
+
+(PG.L2.** -> PG.**)[*]: {
+  style: {
+    stroke: ${color.darkblue}
+  }
+}
+
+(PG.L2TAG.** -> PG.L2TAG.**)[*]: {
+  style: {
+    stroke: ${color.darkgray}
+  }
+}
+
+(PG.L2TAG.** -> PG.L3.**)[*]: {
+  style: {
+    stroke: ${color.deeplavender}
+  }
+}
+
+(PG.L3.** -> PG.L3.**)[*]: {
+  style: {
+    stroke: ${color.darkgray}
+  }
+}
+
+(PG.L3.** -> PG.L4.**)[*]: {
+  style: {
+    stroke: ${color.deepteal}
+  }
+}
+

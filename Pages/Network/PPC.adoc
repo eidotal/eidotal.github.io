@@ -4,7 +4,10 @@ include::../../utils/attribute-include[]
 
 == Overview
 
-The Programmable Packet Processor Complex (PPC) is a high-performance, fully programmable networking engine designed to handle wire-speed packet processing for modern data center and carrier-grade environments.
+The Programmable Packet Processor Complex (PPC) is
+
+* An high-performance
+* Fully programmable networking engine
 
 The PPC architecture is optimized for a Partial Configurable Stage model, allowing for extreme flexibility in protocol handling while maintaining strict hardware-level performance guarantees.
 
@@ -16,10 +19,17 @@ Key Capabilities:
 * **Traffic Engineering:** Support for Mirroring, Multicasting, and Hashing.
 * **Packet Modification:** Supporting Encapsulation, Decapsulation, NAT via INSERT, REMOVE and REPLACE actions.
 
-== pipeline
+This packet processsor is P4 Configurable.
+
+== Pipeline Architecture
+
+The PPC implements a hybrid execution model to maximize throughput while ensuring protocol correctness.
 
 .Block Diagram
 image::./PPC.svg[static,750,role="related thumb center"]
+
+image::./PPC.png[static,750,role="related thumb center"]
+
 
 Fully Programmable Packet Processing Pipeline.
 Pipeline support:
@@ -31,11 +41,13 @@ Pipeline support:
 |Ingress                       |Strict In-Order
 |Parsing & O.D. Classification |Strict In-Order (Assignment of Flow/Ordering IDs)
 |Packet Processing             |Out-Of-Order (Parallel execution across PMUs)
-|Processing Fabric Engine      | Asynchronous (Request/Response via RMC)
-|Egress                        | Strict In-Order (Re-sequencing via ODQ/ODM)
+|Processing Fabric Engine      |Asynchronous (Request/Response via RMC)
+|Egress                        |Strict In-Order (Re-sequencing via ODQ/ODM)
 |===
 
 The Pipeline is a Partial Configurable Stage Architecture.
+
+''''
 
 === IPP
 Input Packet Processor
@@ -48,8 +60,8 @@ Parser Engine
 ''''
 
 === O.D. CLS
-Ordering Domain Classifer
-
+Ordering Domain Classifer - assigns a packet to a specific Ordering Domain
+* Ensures that packets requiring sequential consistency are processed and retired in the order they arrived.
 ''''
 
 === Flow CLS
@@ -58,7 +70,8 @@ Flow Classifer
 ''''
 
 === PPM
-Packet Processor Manager
+Packet Processor Manager is the orchestration hub of the complex, managing the lifecycle of a packet within the chip.
+
 
 ==== IQM
 Input Queue Manager - Ingress buffer.
@@ -66,15 +79,41 @@ Hold Packet Information in an In-Order Queue until a PMU dequeue it.
 
 ==== PMU
 Packet Management unit.
+The PPC utilizes a multi-threaded processing model.
+Each PMU acts as an independent thread of execution.
+
+* **Multi-Stage Processing:** Each PMU thread can be configured to execute up to 4 sequential stages of processing per packet.
+* **PFE Engine Mapping:** In each stage, the PMU can trigger one or more engines within the PFE.
+* **Parallel Engine Operation:** If multiple engines are configured for a single stage, the PMU initiates these lookups/operations in parallel (VLIW-style), significantly reducing the total clock cycles required for complex header manipulations.
+* **State Management:** While lookups are offloaded to the PFE, the PMU maintains the packet's local architectural state and metadata between stages.
+
+PMU deside the Stages setup for a given packet via the `PMD.COMMON.PKT_FLOW`.
+
+[.underline]#**PPC_PPM_PMU_STATE_CONFIG[`FLOW`]**#
+
+[cols="2,1,2,1,2,4"]
+|===
+| Field | Offset | Size | Access | Default Value | Description
+
+| EN    | 0      | 1b   | RW     | 'h1           | ?
+|===
 
 ==== RMC
 Resource Manager Control
 
+Manage PFE engine resources by allocating between PMU threada.
+
+* Manages contention for shared engines across all active PMU threads.
+* Handles the request/response bus protocol, ensuring results are returned to the correct PMU thread and stage.
+
 ==== ODQ
 Ordering Domain Queue
 
+* Stores packets according to there respective ordering domain
+* Head of line blocking - to save the original ordering within a given domain.
+
 ==== OQM
-Ordering Domain Manager
+Ordering Domain Manager - the control logic that triggers the release of packets to the output stage once order is restored.
 
 ''''
 
@@ -86,27 +125,62 @@ Composed of
 * 4 Exact Match (EM) Classifer Engines
 * 2 Wild-Card Match (WCM) Classifer Engines
 * 1 Longest Prefix Match (LPM) Classifer Engine
+* 1 Range Checker Engine
 * 1 Modifier Engine
 * 1 Hashing Engine
 
 ==== IFE
-Input Fabric Engine
+Input Fabric Engine - the ingress interface to the PFE
+
+* handle request buffering 
+* distribute request to specific engines
 
 ==== EM CLS Engine
 Exact Match (EM) Classifer Engines
 
+* Configurable Extractor - extract Key from packet
+* Look-Up Engine
+** Hash Based for Key to Address mapping
+*** Hash Algo: Cuckoo Hash or SHA256 Hash
+** Look-Up Table
+
 ==== WCM Engine
-Wild-Card Match (WCM) Classifer Engines
+Wild-Card Match (WCM) Classifer Engines:
+
+* Configurable Extractor - extract Key from packet
+* Look-Up Engine
+** TCAM based Matching for Key to Address mapping
+** Look-Up Table
+
+Use-Case: ACLs and complex policy enforcement
 
 ==== LPM Engine
 Longest Prefix Match (LPM) Classifer Engine
+
+* Configurable Extractor - extract Key from packet
+* Look-Up Engine
+** LPM Algorithem Maching for Key to Address mapping
+** Look-Up Table
+
+Use-Case: L3 routing table lookups
+
+==== RC Engine
 
 ==== HASH Engine
 
 ==== MOD Engine
 
+The header modification unit - perform NAT, VLAN tagging, tunnel encapsulation/decapsulation
+Support 3 type of operation:
+
+* `INSERT`
+* `REMOVE`
+* `REPLACE`
+
 ==== OFE
-Output Fabric Engine
+Output Fabric Engine - the egress interface
+
+* packages engine results back into responses for the RMC
 
 ''''
 

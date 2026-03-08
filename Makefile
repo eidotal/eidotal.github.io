@@ -41,6 +41,7 @@ Pages-html:
 	cp Pages/svDV/DV_ENV.svg output/html/Pages/svDV
 	cp Pages/Network/PG.svg  output/html/Pages/Network
 	cp Pages/Network/PPC.svg  output/html/Pages/Network
+	cp Pages/Network/PPC.png  output/html/Pages/Network
 	asciidoctor Pages/About/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/About
 	asciidoctor Pages/Network/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/Network
 	asciidoctor Pages/Workflow/*.adoc $(ASCIIDOCTOR_ARGS) -D output/html/Pages/Workflow
