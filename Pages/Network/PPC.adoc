@@ -26,8 +26,6 @@ This packet processsor is P4 Configurable.
 The PPC implements a hybrid execution model to maximize throughput while ensuring protocol correctness.
 
 .Block Diagram
-image::./PPC.svg[static,750,role="related thumb center"]
-
 image::./PPC.png[static,750,role="related thumb center"]
 
 
@@ -60,8 +58,11 @@ Parser Engine
 ''''
 
 === O.D. CLS
+
 Ordering Domain Classifer - assigns a packet to a specific Ordering Domain
+
 * Ensures that packets requiring sequential consistency are processed and retired in the order they arrived.
+
 ''''
 
 === Flow CLS
@@ -89,13 +90,30 @@ Each PMU acts as an independent thread of execution.
 
 PMU deside the Stages setup for a given packet via the `PMD.COMMON.PKT_FLOW`.
 
-[.underline]#**PPC_PPM_PMU_STATE_CONFIG[`FLOW`]**#
+[.underline]#**PPC_PPM_PMU_STATE_CONFIG_0[`FLOW`]**#
 
 [cols="2,1,2,1,2,4"]
 |===
-| Field | Offset | Size | Access | Default Value | Description
+| Field      | Offset | Size | Access | Default Value | Description
 
-| EN    | 0      | 1b   | RW     | 'h1           | ?
+| STAGE_0_EN | 0      | 1b   | RW     | 'h0           | ?
+| STAGE_0    | 1      | 10b  | RW     | 'h0           | ?
+| STAGE_1_EN | 11     | 1b   | RW     | 'h0           | ?
+| STAGE_1    | 12     | 10b  | RW     | 'h0           | ?
+| RSVD       | 22     | ?b   | RW     | 'h0           | ?
+|===
+
+[.underline]#**PPC_PPM_PMU_STATE_CONFIG_1[`FLOW`]**#
+
+[cols="2,1,2,1,2,4"]
+|===
+| Field      | Offset | Size | Access | Default Value | Description
+
+| STAGE_2_EN | 0      | 1b   | RW     | 'h0           | ?
+| STAGE_2    | 1      | 10b  | RW     | 'h0           | ?
+| STAGE_3_EN | 11     | 1b   | RW     | 'h0           | ?
+| STAGE_3    | 12     | 10b  | RW     | 'h0           | ?
+| RSVD       | 22     | ?b   | RW     | 'h0           | ?
 |===
 
 ==== RMC
