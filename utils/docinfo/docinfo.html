@@ -1,0 +1,40 @@
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" /> -->
+
+<link rel="stylesheet" href="../docinfo.css" />
+
+<div class="top-nav">
+    <div class="nav-spacer"></div>
+
+    <div class="nav-logo">Wiki</div>
+
+    <div class="dropdown">
+        <button class="menu-btn" onclick="toggleMenu()">Menu ▾</button>
+        <div id="nav-dropdown" class="dropdown-content">
+            <a href="/index.html">Home</a>
+            <a href="/Pages/About/CV.html">About</a>
+            <a href="/Pages/Network/EthProtocol.html">ETH-Protocol</a>
+            <a href="/Pages/Network/PPC.html">PPC</a>
+            <a href="/Pages/Workflow/Workflow-asciidoc.html">Workflow-asciidoc</a>
+            <a href="/Pages/Workflow/Workflow-git.html">Workflow-git</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        document.getElementById("nav-dropdown").classList.toggle("show");
+    }
+
+    // Close the menu if clicking outside
+    window.onclick = function (event) {
+        if (!event.target.matches(".menu-btn")) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains("show")) {
+                    openDropdown.classList.remove("show");
+                }
+            }
+        }
+    };
+</script>

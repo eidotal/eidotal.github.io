@@ -13,10 +13,13 @@ endef
 
 
 ifndef ASCIIDOCTOR_ARGS
-ASCIIDOCTOR_ARGS = -a relfilesuffix=.html -a docinfodir=${WA}/utils -a docinfo=shared
+ASCIIDOCTOR_ARGS = -a relfilesuffix=.html -a docinfodir=${WA}/utils/docinfo-local -a docinfo=shared
 # ASCIIDOCTOR_ARGS = -a relfilesuffix=.html
 endif
 
+ifndef ASCIIDOCTOR_REMOTE_ARGS
+ASCIIDOCTOR_REMOTE_ARGS = -a relfilesuffix=.html -a docinfodir=${WA}/utils/docinfo -a docinfo=shared
+endif
 
 .PHONY:all
 all: Index-html Pages-html
@@ -89,4 +92,4 @@ install:
 .PHONY: create
 create:
 	asciidoctor index.adoc
-	asciidoctor Pages/*/*.adoc $(ASCIIDOCTOR_ARGS)
+	asciidoctor Pages/*/*.adoc $(ASCIIDOCTOR_REMOTE_ARGS)

@@ -116,6 +116,14 @@ PMU deside the Stages setup for a given packet via the `PMD.COMMON.PKT_FLOW`.
 | RSVD       | 22     | ?b   | RW     | 'h0           | ?
 |===
 
+The PMU goes stage by stage:
+
+* if `PPC_PPM_PMU_STATE_CONFIG_<#>[PMD.COMMON.PKT_FLOW].STAGE_<##>_EN` == 1
+** Send to RMC `PPC_PPM_PMU_STATE_CONFIG_<#>[PMD.COMMON.PKT_FLOW].STAGE_<##>`
+** Wait for complition
+* else
+** Notify OQM: `PKT_READY`
+
 ==== RMC
 Resource Manager Control
 
