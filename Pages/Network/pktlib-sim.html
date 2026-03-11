@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Network Protocol Specification Lab</title>
+        <style>
+            :root {
+                --l2: #e74c3c;
+                --l25: #9b59b6;
+                --l3: #27ae60;
+                --l4: #2980b9;
+                /* --ocp: #f39c12; */
+                /* --tunnel: #4fd6be; */
+                --tunnel: #f39c12;
+                --data: #7f8c8d;
+            }
+
+            body {
+                font-family: "Segoe UI", sans-serif;
+                background: #0d1117;
+                color: #c9d1d9;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .workspace {
+                display: grid;
+                grid-template-columns: 1fr 1.2fr 2fr;
+                gap: 20px;
+                /* width: 1200px; */
+                width: 100%;
+            }
+
+            .panel {
+                background: #161b22;
+                border: 1px solid #30363d;
+                padding: 20px;
+                border-radius: 8px;
+            }
+
+            .stack-item {
+                position: relative;
+                width: 100%;
+                padding: 2px;
+                margin-bottom: 15px;
+                border-radius: 4px;
+                text-align: center;
+                font-weight: bold;
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .stack-item::after {
+                content: "↓";
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                transform: translateX(-50%);
+                color: #58a6ff;
+            }
+
+            .btn-group {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-top: 10px;
+            }
+
+            button {
+                padding: 10px;
+                border: 1px solid #30363d;
+                border-radius: 6px;
+                cursor: pointer;
+                background: #21262d;
+                color: #c9d1d9;
+                text-align: left;
+                font-size: 0.85em;
+            }
+
+            button:hover {
+                background: #30363d;
+                color: #fff;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                font-size: 0.8em;
+                background: #0d1117;
+            }
+
+            th,
+            td {
+                padding: 8px;
+                border: 1px solid #30363d;
+                text-align: left;
+            }
+
+            th {
+                color: #58a6ff;
+            }
+
+            .c-l2 {
+                background: var(--l2);
+            }
+
+            .c-l25 {
+                background: var(--l25);
+            }
+
+            .c-l3 {
+                background: var(--l3);
+            }
+
+            .c-l4 {
+                background: var(--l4);
+            }
+
+            /* .c-ocp { */
+            /*     background: var(--ocp); */
+            /* } */
+
+            .c-tunnel {
+                background: var(--tunnel);
+            }
+
+            .c-data {
+                background: var(--data);
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Network Protocol Specification Lab</h1>
+
+        <div class="workspace">
+            <div class="panel">
+                <h3 id="step-label">Parser Graph State: Start</h3>
+                <div id="options" class="btn-group"></div>
+                <button
+                    style="background: #8e1a10; margin-top: 20px; text-align: center; width: 100%"
+                    onclick="reset()"
+                >
+                    Reset Stack
+                </button>
+                <!-- <div id="packet-list" style="margin-top: 40px"></div> -->
+            </div>
+            <div class="panel">
+                <div id="packet-list" style="margin-top: 40px"></div>
+            </div>
+
+            <div class="panel" style="overflow-y: auto; max-height: 85vh">
+                <h2 style="color: #f39c12">Detailed Field Inspector</h2>
+                <div id="inspector-content"></div>
+            </div>
+        </div>
+
+        <script>
+            const registry = {
+                ETH: {
+                    name: "MAC",
+                    class: "c-l2",
+                    next: ["VLAN", "CSIG", "MPLS", "IPv4", "IPv6"],
+                    fields: [
+                        { f: "DA", s: "48b" },
+                        { f: "SA", s: "48b" },
+                        { f: "Type", s: "16b" },
+                    ],
+                },
+                AFH_GEN1: {
+                    name: "AFH_GEN1",
+                    class: "c-l2",
+                    next: ["VLAN", "CSIG", "MPLS", "AFH_EXT"],
+                    fields: [{ f: "SUE_Type", s: "16b", d: "OCP SUE GEN1 identifier" }],
+                },
+                AFH_GEN2: {
+                    name: "AFH_GEN2 (UFH)",
+                    class: "c-l2",
+                    next: ["IPv4", "IPv6", "DATA"],
+                    fields: [
+                        { f: "DstXPU", s: "32b" },
+                        { f: "SrcXPU", s: "32b" },
+                        { f: "TC", s: "8b" },
+                        { f: "Entropy", s: "8b" },
+                    ],
+                },
+                VLAN: {
+                    name: "VLAN",
+                    class: "c-l25",
+                    next: ["VLAN", "CSIG", "MPLS", "IPv4", "IPv6"],
+                    fields: [
+                        { f: "TPID", s: "16b" },
+                        { f: "PCP", s: "3b" },
+                        { f: "VID", s: "12b" },
+                    ],
+                },
+                CSIG: {
+                    name: "CSIG",
+                    class: "c-l25",
+                    next: ["MPLS", "IPv4", "IPv6"],
+                    fields: [
+                        { f: "Congestion Bit", s: "1b" },
+                        { f: "NextHdr", s: "8b" },
+                    ],
+                },
+                MPLS: {
+                    name: "MPLS",
+                    class: "c-l25",
+                    next: ["MPLS", "IPv4", "IPv6"],
+                    fields: [
+                        { f: "Label", s: "20b" },
+                        { f: "TC", s: "3b" },
+                        { f: "S", s: "1b" },
+                        { f: "TTL", s: "8b" },
+                    ],
+                },
+                AFH_EXT: {
+                    name: "AFH_EXT",
+                    class: "c-l2",
+                    next: ["DATA"],
+                    fields: [
+                        { f: "AR", s: "1b", d: "Adaptive Routing" },
+                        { f: "C", s: "1b", d: "Congestion Eligible" },
+                    ],
+                },
+                IPv4: {
+                    name: "IPv4",
+                    class: "c-l3",
+                    next: ["IPv4", "IPv6", "TCP", "UDP", "GRE", "ESP", "PSP"],
+                    fields: [
+                        { f: "IHL", s: "4b" },
+                        { f: "TTL", s: "8b" },
+                        { f: "Protocol", s: "8b", d: "Set to 4 for IP-in-IP" },
+                        { f: "SrcIP", s: "32b" },
+                    ],
+                },
+                IPv6: {
+                    name: "IPv6",
+                    class: "c-l3",
+                    next: ["IPv6", "IPv4", "TCP", "UDP", "GRE", "ESP", "PSP"],
+                    fields: [
+                        { f: "FlowLabel", s: "20b" },
+                        { f: "NextHdr", s: "8b", d: "Identifies Tunnel/L4" },
+                        { f: "SrcIP", s: "128b" },
+                    ],
+                },
+                GRE: {
+                    name: "GRE",
+                    class: "c-tunnel",
+                    next: ["ETH", "IPv4", "IPv6"],
+                    fields: [
+                        { f: "C", s: "1b" },
+                        { f: "Protocol", s: "16b" },
+                    ],
+                },
+                TCP: {
+                    name: "TCP",
+                    class: "c-l4",
+                    next: ["DATA"],
+                    fields: [
+                        { f: "SrcPort", s: "16b" },
+                        { f: "DstPort", s: "16b" },
+                        { f: "Flags", s: "9b" },
+                    ],
+                },
+                UDP: {
+                    name: "UDP",
+                    class: "c-l4",
+                    next: ["VXLAN", "DATA"],
+                    fields: [
+                        { f: "SrcPort", s: "16b" },
+                        { f: "DstPort", s: "16b" },
+                        { f: "Len", s: "16b" },
+                    ],
+                },
+                VXLAN: {
+                    name: "VXLAN",
+                    class: "c-tunnel",
+                    next: ["ETH"],
+                    fields: [{ f: "VNI", s: "24b" }],
+                },
+                DATA: {
+                    name: "PAYLOAD",
+                    class: "c-data",
+                    next: [],
+                    fields: [{ f: "Data", s: "Variable" }],
+                },
+            };
+
+            let stack = [];
+            function update(key) {
+                const opt = document.getElementById("options");
+                opt.innerHTML = "";
+                const list = key === "START" ? ["ETH", "AFH_GEN1", "AFH_GEN2"] : registry[key].next || [];
+
+                // Add specific SUE AFH_EXT logic: if AFH_GEN1 selected, offer EXT
+                if (key === "AFH_GEN1") list.push("AFH_EXT");
+
+                list.forEach((k) => {
+                    const b = document.createElement("button");
+                    b.innerText = "+ " + registry[k].name;
+                    b.onclick = () => {
+                        stack.push(k);
+                        render();
+                        update(k);
+                    };
+                    opt.appendChild(b);
+                });
+                if (key !== "START" && key !== "DATA" && !list.includes("DATA")) {
+                    const b = document.createElement("button");
+                    b.innerText = "+ Payload";
+                    b.onclick = () => {
+                        stack.push("DATA");
+                        render();
+                        update("DATA");
+                    };
+                    opt.appendChild(b);
+                }
+            }
+
+            function render() {
+                const list = document.getElementById("packet-list");
+                const insp = document.getElementById("inspector-content");
+                list.innerHTML = "";
+                insp.innerHTML = "";
+                stack.forEach((k, i) => {
+                    const item = document.createElement("div");
+                    item.className = `stack-item ${registry[k].class}`;
+                    item.innerText = registry[k].name;
+                    list.appendChild(item);
+
+                    const block = document.createElement("div");
+                    block.innerHTML =
+                        `<h4 style="margin:10px 0;">${i + 1}. ${registry[k].name}</h4><table><tr><th>Field</th><th>Size</th><th>Notes</th></tr>` +
+                        registry[k].fields
+                            .map((f) => `<tr><td>${f.f}</td><td>${f.s}</td><td>${f.d || "-"}</td></tr>`)
+                            .join("") +
+                        `</table>`;
+                    insp.appendChild(block);
+                });
+            }
+
+            function reset() {
+                stack = [];
+                render();
+                update("START");
+            }
+            update("START");
+        </script>
+    </body>
+</html>
