@@ -162,13 +162,45 @@ Input Fabric Engine - the ingress interface to the PFE
 * distribute request to specific engines
 
 ==== EM CLS Engine
-Exact Match (EM) Classifer Engines
+The Exact Match (EM) Classifer Engines processes up to 64-bytes packet header. It computes a hash, performs a multi-way lookup in a hash table (SRAM-based), and returns a Action.
 
 * Configurable Extractor - extract Key from packet
 * Look-Up Engine
 ** Hash Based for Key to Address mapping
 *** Hash Algo: Cuckoo Hash or SHA256 Hash
 ** Look-Up Table
+
+===== Top-Level Block Diagram
+
+[source, mermaid]
+----
+graph LR
+    subgraph Extractor
+        A[64B Input] --> B[Field Selector]
+    end
+    subgraph Hash_Engine
+        B --> C[CRC/Toeplitz Hash]
+    end
+    subgraph Lookup_Engine
+        C --> D[SRAM Bucket Pointer]
+        D --> E[Bucket Match/Verify]
+    end
+    E --> F[Flow Action Data]
+----
+
+===== Extractor
+
+Performs bit-masking on the 64-byte input to isolate the predefined 5-tuple (or custom flow-key). It aligns fields into a flat "Search Key."
+
+===== Hash Engine
+Uses a hardware-accelerated CRC-32 or Toeplitz implementation.
+To minimize collisions, **Dual-Hash** approach (generating two indices) to map into a Cuckoo Hashing table or a chained bucket structure.
+
+===== Lookup Engine
+
+** Phase 1: Indexing SRAMs using the hash result.
+** Phase 2: Comparing the stored key in the bucket against the incoming Search Key.
+** Phase 3: Hit/Miss logic and Action Pointer retrieval.
 
 ==== WCM Engine
 Wild-Card Match (WCM) Classifer Engines:
