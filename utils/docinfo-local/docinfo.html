@@ -1,29 +1,33 @@
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" /> -->
 
 <link rel="stylesheet" href="file:///home/eidotal/Workarea/Project/eidotal.github.io/utils/docinfo.css" />
 
 <div class="top-nav">
-    <div class="nav-spacer"></div>
-
     <div class="nav-logo">Wiki</div>
 
     <div class="dropdown">
         <button class="menu-btn" onclick="toggleMenu()">Menu ▾</button>
         <div id="nav-dropdown" class="dropdown-content">
-            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/index.html">Home</a>
-            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/About/CV.html">About</a>
-            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Network/EthProtocol.html"
-                >ETH-Protocol</a
-            >
-            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Network/PPC.html">PPC</a>
-            <a
-                href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Workflow/Workflow-asciidoc.html"
-                >Workflow-asciidoc</a
-            >
-            <a
-                href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Workflow/Workflow-git.html"
-                >Workflow-git</a
-            >
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/index.html" class="home-link">Home</a>
+            <div class="menu-category">About</div>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/About/CV.html" class="menu-item">CV</a>
+            <div class="menu-category">Network</div>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Network/EthProtocol.html" class="menu-item">EthProtocol</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Network/PPC-DV.html" class="menu-item">PPC-DV</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Network/PPC.html" class="menu-item">PPC</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Network/PacketProcessing.html" class="menu-item">PacketProcessing</a>
+            <div class="menu-category">Workflow</div>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Workflow/Workflow-asciidoc.html" class="menu-item">Workflow-asciidoc</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Workflow/Workflow-gemini-git.html" class="menu-item">Workflow-gemini-git</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/Workflow/Workflow-git.html" class="menu-item">Workflow-git</a>
+            <div class="menu-category">Svdv</div>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/DV_Methodolgy.html" class="menu-item">DV_Methodolgy</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/PyPostProcess.html" class="menu-item">PyPostProcess</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/PyRegr.html" class="menu-item">PyRegr</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/PyRun.html" class="menu-item">PyRun</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/svDV-Overview.html" class="menu-item">svDV-Overview</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/svDV-README.html" class="menu-item">svDV-README</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/svDV-Tools.html" class="menu-item">svDV-Tools</a>
+            <a href="file:///home/eidotal/Workarea/Project/eidotal.github.io/output/html/Pages/svDV/sv_logger_pkg.html" class="menu-item">sv_logger_pkg</a>
         </div>
     </div>
 </div>
@@ -33,7 +37,6 @@
         document.getElementById("nav-dropdown").classList.toggle("show");
     }
 
-    // Close the menu if clicking outside
     window.onclick = function (event) {
         if (!event.target.matches(".menu-btn")) {
             var dropdowns = document.getElementsByClassName("dropdown-content");

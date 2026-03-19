@@ -1,0 +1,57 @@
+# PDF Theme for Eido Tal Wiki
+extends: default
+font:
+  catalog:
+    Inter:
+      normal: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Regular.ttf
+      bold: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Bold.ttf
+      italic: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Italic.ttf
+      bold_italic: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-BoldItalic.ttf
+  main: Inter
+page:
+  layout: portrait
+  margin: [0.75in, 0.75in, 0.75in, 0.75in]
+  size: A4
+header:
+  height: 0.75in
+  line_width: 0.25
+  recto:
+    left: '{document-title}'
+    right: '{section-or-chapter-title}'
+  verso:
+    left: '{section-or-chapter-title}'
+    right: '{document-title}'
+footer:
+  height: 0.5in
+  line_width: 0.25
+  recto:
+    left: 'Eido Tal Wiki'
+    right: '{page-number} / {page-count}'
+  verso:
+    left: '{page-number} / {page-count}'
+    right: 'Eido Tal Wiki'
+base:
+  font_color: #1e293b
+  line_height: 1.4
+heading:
+  font_color: #3b82f6
+  font_style: bold
+  h1_font_size: 24
+  h2_font_size: 20
+  h3_font_size: 16
+link:
+  font_color: #3b82f6
+code:
+  font_family: Courier
+  font_size: 9
+  background_color: #f8fafc
+  border_color: #e2e8f0
+  border_width: 0.5
+admonition:
+  icon:
+    tip:
+      name: fa-lightbulb
+      stroke_color: #3b82f6
+    important:
+      name: fa-exclamation-circle
+      stroke_color: #ef4444

@@ -8,6 +8,7 @@ vars:
   # Default arguments (overridable via environment variables)
   ASCIIDOCTOR_ARGS: "-a relfilesuffix=.html -a docinfodir={{.WA}}/utils/docinfo-local -a docinfo=shared"
   ASCIIDOCTOR_REMOTE_ARGS: "-a relfilesuffix=.html -a docinfodir={{.WA}}/utils/docinfo -a docinfo=shared"
+  ASCIIDOCTOR_PDF_ARGS: "-a pdf-theme={{.WA}}/utils/pdf-theme.yml -a pdf-fontsdir={{.WA}}/utils/fonts;GEM_FONTS_DIR"
   INSTALL_CMD: '{{default "apt-get install -y" .INSTALL_CMD}}'
   OUTPUT_DIR: '{{default "output" .OUTPUT_DIR}}'
 
@@ -21,7 +22,7 @@ tasks:
   clean:
     desc: Remove output and vscode directories
     cmds:
-      - rm -rf {{.OUTPUT_DIR}} .vscode/
+      - rm -rf {{.OUTPUT_DIR}} .vscode/ .task
 
   index-html:
     desc: Build the main index page
@@ -68,9 +69,9 @@ tasks:
       - mkdir -p {{.OUTPUT_DIR}}/pdf/Pages/{About,Network,Workflow,svDV}
       - cp Pages/svDV/DV_ENV.svg {{.OUTPUT_DIR}}/pdf/Pages/svDV
       - cp Pages/Network/PG.svg {{.OUTPUT_DIR}}/pdf/Pages/Network
-      - asciidoctor-pdf *.adoc {{.ASCIIDOCTOR_ARGS}} -D {{.OUTPUT_DIR}}/pdf
+      - asciidoctor-pdf *.adoc {{.ASCIIDOCTOR_PDF_ARGS}} -D {{.OUTPUT_DIR}}/pdf
       - for: [About, Network, Workflow, svDV]
-        cmd: asciidoctor-pdf Pages/{{.ITEM}}/*.adoc {{.ASCIIDOCTOR_ARGS}} -D {{.OUTPUT_DIR}}/pdf/Pages/{{.ITEM}}
+        cmd: asciidoctor-pdf Pages/{{.ITEM}}/*.adoc {{.ASCIIDOCTOR_PDF_ARGS}} -D {{.OUTPUT_DIR}}/pdf/Pages/{{.ITEM}}
 
   open:
     desc: Open the generated index in Firefox
