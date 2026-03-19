@@ -1,0 +1,131 @@
+= Verification Strategy Document: Programmable Packet Processor Complex (PPC)
+include::../../utils/attribute-include[]
+:experimental:
+
+== Overview
+
+The Programmable Packet Processor Complex (PPC) is a high-performance, fully programmable networking engine. The architecture is optimized around a *Partial Configurable Stage* model, providing deep flexibility in protocol handling alongside hardware-level performance guarantees. It implements a hybrid execution model designed to maximize throughput while ensuring strict protocol correctness.
+
+=== DUT Features
+
+[cols="1,4", options="header"]
+|===
+| Feature | Description
+| *Packet Parsing* | Up to 64 Bytes, supporting both L2 and L3 Protocols.
+| *Classification* | Multi-Engine support for Exact Match (EM), Wild-Card Match (WCM), and Longest Prefix Match (LPM).
+| *Traffic Engineering* | Mirroring, Multicasting, and Hashing capabilities.
+| *Packet Modification* | Encapsulation, Decapsulation, and NAT via `INSERT`, `REMOVE`, and `REPLACE` actions.
+| *PMU Architecture* | Multi-threaded Packet Management Unit; each acting as an independent execution thread.
+| *Multi-Stage Processing* | Each PMU thread executes up to 4 sequential stages per packet.
+| *Parallel Operations* | VLIW-style triggering of multiple Processor Fabric Engine (PFE) resources per stage.
+| *Ordering* | Strict In-Order retirement enforced by the Ordering Domain Queue (ODQ).
+|===
+
+== Verification Objectives
+
+* *Functional Correctness:* Verify end-to-end packet flow from IPP to OPP across all L2/L3 protocols.
+* *Pipeline Concurrency:* Ensure the PPM accurately orchestrates out-of-order parallel processing while maintaining strict in-order egress.
+* *Resource Arbitration:* Validate that the Resource Manager Control (RMC) allocates PFE engines across contending PMU threads without deadlocks.
+* *Lookup & Modification Integrity:* Verify PFE classification engines and MOD engine header manipulations.
+* *Configuration State:* Ensure `PPC_PPM_PMU_STATE_CONFIG` registers correctly dictate RMC request flows.
+
+== Testbench Architecture
+
+The UVM environment is architected to inject traffic at ingress, monitor egress, and model the internal fabric for scoreboarding.
+
+[mermaid]
+....
+graph TD
+    subgraph PPC_UVM_ENV
+        VSQ[Virtual Sequencer]
+        CFG[Env Configuration]
+        SB[Scoreboard]
+        RM[Reference Model]
+        
+        subgraph IPP_AGENT
+            DRV1[Driver]
+            MON1[Monitor]
+            SQ1[Sequencer]
+            DRV1 -->|Packet Data| DUT_IPP
+            MON1 -->|Ingress Tx| SB
+        end
+        
+        subgraph OPP_AGENT
+            MON2[Monitor]
+            MON2 -->|Egress Tx| SB
+            DUT_OPP -->|Packet Data| MON2
+        end
+        
+        subgraph APB_AGENT
+            DRV3[Driver]
+            MON3[Monitor]
+            SQ3[Sequencer]
+            DRV3 -->|Reg R/W| DUT_CSR
+            MON3 -->|Reg Updates| RM
+        end
+    end
+    
+    VSQ --> SQ1
+    VSQ --> SQ3
+    RM --> SB
+    MON1 --> RM
+....
+
+== Configuration & Stimulus Strategy
+
+=== Configuration Strategy
+* *Configuration Object:* A centralized `ppc_env_cfg` object holds agent configs, interface handles, and the RAL model.
+* *Randomization:* The RAL model is randomized at start-of-test to populate SRAM, TCAM, and LPM tables.
+* *Constraints:* Applied to `PPC_PPM_PMU_STATE_CONFIG_<#>` to ensure valid `STAGE_X_EN` bits, mimicking P4 pipeline profiles.
+
+=== Generation Strategy
+[horizontal]
+`ppc_base_vseq`:: Base virtual sequence for handle management.
+`ppc_traffic_vseq`:: Generates constrained random L2/L3 packets (Flow IDs/5-tuple).
+`ppc_pmu_stress_vseq`:: Targets resource contention by triggering parallel PFE engines (EM + WCM) to stress the RMC.
+
+NOTE: Packet sizes are constrained to boundary conditions (e.g., exactly 64 Bytes) to test parsing limits.
+
+== Checking & Scoreboarding
+
+=== Reference Model (RM)
+The RM is a TLM-based SystemVerilog implementation mimicking the Partial Configurable Stage Architecture.
+
+[mermaid]
+....
+graph LR
+    A[Ingress TLM] --> B[Parser & Classifier Model]
+    B --> C[PPM Model]
+    C --> D[PMU Threading Logic]
+    D <--> E[PFE Lookup/Mod Logic]
+    D --> F[ODQ Re-sequencer Model]
+    F --> G[Egress TLM]
+....
+
+* RM predicts PMU stage setup based on `PKT_FLOW` and mirrored RAL state.
+* Simulates parallel lookups and applies `INSERT`/`REMOVE`/`REPLACE` actions via the MOD engine model.
+
+=== Additional Checkers
+* *Protocol Checkers (SVA):* Assertions on the RMC interface to validate bus protocols and thread/stage data returns.
+* *Queue Checkers:* Monitors on IQM and ODQ to detect buffer overflows under high contention.
+
+=== Scoreboarding Strategy
+The Scoreboard uses `uvm_tlm_analysis_fifo` to compare predicted transactions (RM) against actual egress (OPP Monitor). An in-order comparator validates the *head-of-line blocking* logic of the ODQ.
+
+== Coverage Plan
+
+[cols="2,1,3", options="header"]
+|===
+| Coverage Group | Target | Description
+| `pmu_stage_cg` | 100% | Cross coverage of STAGE_0_EN through STAGE_3_EN permutations.
+| `pfe_engine_cg` | 100% | Cross coverage of parallel engine triggers (EM x WCM x LPM x MOD).
+| `packet_parse_cg` | 100% | Bins for header sizes (min, typical, 64B) and L2/L3 types.
+| `mod_action_cg` | 100% | Coverage on MOD operations applied to varying header offsets.
+| `odq_contention_cg` | 100% | Transitions of ODQ depth to verify sequential release.
+|===
+
+[IMPORTANT]
+.End-Of-Test (EOT) Checks
+* Verify all PMU threads returned to `IDLE`.
+* Confirm IQM and ODQ are empty.
+* Ensure no outstanding requests in RMC/PFE interfaces.
