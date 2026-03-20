@@ -1,5 +1,5 @@
 = Recommended Git Workflow & Best Practices
-include::../../utils/attribute-include[]
+include::{project-root}/utils/attribute-include[]
 
 This document outlines the standard **Feature Branch Workflow** used by our team to ensure code quality, maintainability, and a clean project history.
 
@@ -7,7 +7,16 @@ This document outlines the standard **Feature Branch Workflow** used by our team
 
 We follow a structured flow to keep the `main` branch stable at all times.
 
-[attachment_0](attachment)
+[mermaid]
+....
+graph LR
+    Main[main branch] -->|checkout -b| Feat(feature branch)
+    Feat --> Dev{Develop}
+    Dev -->|commit| Dev
+    Dev -->|rebase main| Reb(rebased branch)
+    Reb -->|push --force-with-lease| PR[Pull Request]
+    PR -->|Merge| Main
+....
 
 === Step 1: Sync Your Local Environment
 Before starting new work, always ensure your local `main` is up to date.

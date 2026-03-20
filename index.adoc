@@ -1,5 +1,5 @@
 = Eido Tal - Wiki
-include::utils/attribute-include[]
+include::{project-root}/utils/attribute-include[]
 
 ====
 

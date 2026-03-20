@@ -1,5 +1,7 @@
 :author: Eido Tal
 :email: eidotal@gmail.com
+:utils: {project-root}/utils
+:pages: {project-root}/Pages
 :nofooter:
 :attributes:
 :icons: font

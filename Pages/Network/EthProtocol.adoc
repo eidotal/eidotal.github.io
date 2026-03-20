@@ -1,5 +1,5 @@
 = Network Protocol Specification
-include::../../utils/attribute-include[]
+include::{project-root}/utils/attribute-include[]
 :experimental:
 
 This document provides a technical overview of common networking protocols, including:

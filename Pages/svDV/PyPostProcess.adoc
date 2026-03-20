@@ -1,5 +1,5 @@
 = PyPostProcess.py
-include::../../utils/attribute-include[]
+include::{project-root}/utils/attribute-include[]
 
 == Purpose
 

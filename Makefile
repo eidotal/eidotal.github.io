@@ -13,12 +13,12 @@ endef
 
 
 ifndef ASCIIDOCTOR_ARGS
-ASCIIDOCTOR_ARGS = -a relfilesuffix=.html -a docinfodir=${WA}/utils/docinfo-local -a docinfo=shared
+ASCIIDOCTOR_ARGS = -a relfilesuffix=.html -a project-root=${WA} -a docinfodir=${WA}/utils/docinfo-local -a docinfo=shared
 # ASCIIDOCTOR_ARGS = -a relfilesuffix=.html
 endif
 
 ifndef ASCIIDOCTOR_REMOTE_ARGS
-ASCIIDOCTOR_REMOTE_ARGS = -a relfilesuffix=.html -a docinfodir=${WA}/utils/docinfo -a docinfo=shared
+ASCIIDOCTOR_REMOTE_ARGS = -a relfilesuffix=.html -a project-root=${WA} -a docinfodir=${WA}/utils/docinfo -a docinfo=shared
 endif
 
 .PHONY:all
