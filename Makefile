@@ -94,5 +94,5 @@ install:
 
 .PHONY: create
 create:
-	asciidoctor index.adoc
+	asciidoctor index.adoc $(ASCIIDOCTOR_REMOTE_ARGS)
 	asciidoctor Pages/*/*.adoc $(ASCIIDOCTOR_REMOTE_ARGS)
