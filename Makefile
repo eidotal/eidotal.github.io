@@ -17,6 +17,8 @@ ASCIIDOCTOR_ARGS = -a relfilesuffix=.html -a project-root=${WA} -a docinfodir=${
 # ASCIIDOCTOR_ARGS = -a relfilesuffix=.html
 endif
 
+ASCIIDOCTOR_PDF_ARGS ?= -a project-root=${WA} -a pdf-theme=${WA}/utils/pdf-theme.yml
+
 ifndef ASCIIDOCTOR_REMOTE_ARGS
 ASCIIDOCTOR_REMOTE_ARGS = -a relfilesuffix=.html -a project-root=${WA} -a docinfodir=${WA}/utils/docinfo -a docinfo=shared
 endif
@@ -68,11 +70,11 @@ PDF:
 	@mkdir -p output/pdf/Pages/svDV
 	cp Pages/svDV/DV_ENV.svg output/pdf/Pages/svDV
 	cp Pages/Network/PG.svg output/pdf/Pages/Network
-	asciidoctor-pdf *.adoc $(ASCIIDOCTOR_ARGS) -D output/pdf
-	asciidoctor-pdf Pages/About/*.adoc $(ASCIIDOCTOR_ARGS) -D output/pdf/Pages/About
-	asciidoctor-pdf Pages/Network/*.adoc $(ASCIIDOCTOR_ARGS) -D output/pdf/Pages/Network
-	asciidoctor-pdf Pages/Workflow/*.adoc $(ASCIIDOCTOR_ARGS) -D output/pdf/Pages/Workflow
-	asciidoctor-pdf Pages/svDV/*.adoc $(ASCIIDOCTOR_ARGS) -D output/pdf/Pages/svDV
+	asciidoctor-pdf *.adoc $(ASCIIDOCTOR_PDF_ARGS) -D output/pdf
+	asciidoctor-pdf Pages/About/*.adoc $(ASCIIDOCTOR_PDF_ARGS) -D output/pdf/Pages/About
+	asciidoctor-pdf Pages/Network/*.adoc $(ASCIIDOCTOR_PDF_ARGS) -D output/pdf/Pages/Network
+	asciidoctor-pdf Pages/Workflow/*.adoc $(ASCIIDOCTOR_PDF_ARGS) -D output/pdf/Pages/Workflow
+	asciidoctor-pdf Pages/svDV/*.adoc $(ASCIIDOCTOR_PDF_ARGS) -D output/pdf/Pages/svDV
 
 
 .PHONY:open

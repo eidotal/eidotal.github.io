@@ -8,7 +8,7 @@ vars:
   # Default arguments (overridable via environment variables)
   ASCIIDOCTOR_ARGS: "-a relfilesuffix=.html -a project-root={{.WA}} -a docinfodir={{.WA}}/utils/docinfo-local -a docinfo=shared"
   ASCIIDOCTOR_REMOTE_ARGS: "-a relfilesuffix=.html -a project-root={{.WA}} -a docinfodir={{.WA}}/utils/docinfo -a docinfo=shared"
-  ASCIIDOCTOR_PDF_ARGS: "-a pdf-theme={{.WA}}/utils/pdf-theme.yml -a pdf-fontsdir={{.WA}}/utils/fonts;GEM_FONTS_DIR"
+  ASCIIDOCTOR_PDF_ARGS: "-a pdf-theme={{.WA}}/utils/pdf-theme.yml -a project-root={{.WA}}"
   INSTALL_CMD: '{{default "apt-get install -y" .INSTALL_CMD}}'
   OUTPUT_DIR: '{{default "output" .OUTPUT_DIR}}'
 

@@ -1,13 +1,13 @@
 # PDF Theme for Eido Tal Wiki
 extends: default
-font:
-  catalog:
-    Inter:
-      normal: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Regular.ttf
-      bold: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Bold.ttf
-      italic: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Italic.ttf
-      bold_italic: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-BoldItalic.ttf
-  main: Inter
+# font:
+#   catalog:
+#     Inter:
+#       normal: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Regular.ttf
+#       bold: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Bold.ttf
+#       italic: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-Italic.ttf
+#       bold_italic: https://github.com/google/fonts/raw/main/ofl/inter/static/Inter-BoldItalic.ttf
+#   main: Inter
 page:
   layout: portrait
   margin: [0.75in, 0.75in, 0.75in, 0.75in]
@@ -16,20 +16,20 @@ header:
   height: 0.75in
   line_width: 0.25
   recto:
-    left: '{document-title}'
-    right: '{section-or-chapter-title}'
+    left: "{document-title}"
+    right: "{section-or-chapter-title}"
   verso:
-    left: '{section-or-chapter-title}'
-    right: '{document-title}'
+    left: "{section-or-chapter-title}"
+    right: "{document-title}"
 footer:
   height: 0.5in
   line_width: 0.25
   recto:
-    left: 'Eido Tal Wiki'
-    right: '{page-number} / {page-count}'
+    left: "Eido Tal Wiki"
+    right: "{page-number} / {page-count}"
   verso:
-    left: '{page-number} / {page-count}'
-    right: 'Eido Tal Wiki'
+    left: "{page-number} / {page-count}"
+    right: "Eido Tal Wiki"
 base:
   font_color: #1e293b
   line_height: 1.4
